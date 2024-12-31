@@ -74,7 +74,7 @@ const Card = ({
       </Container>
       <Container className="divide-y p-0 h-[100px] flex items-center justify-center w-[90%] px-5">
         <div className="flex items-center justify-around w-full px-6 py-4 h-[50px]">
-          <Heading level="h1">{route.title}{route.id}</Heading>
+          <Heading level="h1">{route.title}</Heading>
           <Button
             variant="secondary"
             onClick={() => navigate(route.route)}

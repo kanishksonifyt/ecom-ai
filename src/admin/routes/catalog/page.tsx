@@ -4,7 +4,7 @@ import { Container } from "@medusajs/ui";
 import React, { useEffect, useState } from "react";
 import { Button, FocusModal, Heading, Input, Label, Text } from "@medusajs/ui";
 import Highlightcard from "./highlightcard.js";
-
+import axios from "axios";
 interface PostAdminCreateCatalogsectionPayload {
   image: string;
   link: string;
@@ -33,16 +33,55 @@ type CatalogSectionFormProps = {
 const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
   setcatalogSections,
 }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [responseImageLink, setResponseImageLink] = useState<string | null>(
+    null
+  );
+
+  const uploadImage = async () => {
+    if (image instanceof File) {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("image", image);
+  
+        const response = await axios.post(
+          "http://148.135.138.221:4000/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization:
+                "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
+            },
+          }
+        );
+  
+        console.log("Upload Response:", response);
+        setResponseImageLink(response.data); // Adjust based on response structure
+        setLoading(false);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        // setError("Failed to upload image");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setError("Please upload a valid image file");
+    }
+  };
+  
 
   const resetForm = () => {
-    setImage("");
+    setImage(null);
     setLink("");
     setError(null);
+    setLoading(false);
+    setResponseImageLink(null);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,9 +89,9 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
     setLoading(true);
     setError(null);
 
-    const payload: PostAdminCreateCatalogsectionPayload = { link, image };
-
     try {
+      const payload = { link, image: responseImageLink };
+
       const response = await fetch("/admin/catalog", {
         method: "POST",
         headers: {
@@ -63,24 +102,18 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create hero section");
+        throw new Error(
+          errorData.message || "Failed to create catalog section"
+        );
       }
 
-      const data = await response.json();
-      console.log("Catalog section created successfully:", data);
-
-      // Fetch updated hero sections
-      const updatedHeroSections = await fetchCatalogSections();
-      if (updatedHeroSections) {
-        setcatalogSections(updatedHeroSections);
-      }
-
-      // Reset form and close modal
+      const updatedSections = await fetchCatalogSections(); // Replace with your data fetching logic
+      setcatalogSections(updatedSections);
       resetForm();
       setIsModalOpen(false);
     } catch (err: any) {
-      console.error("Error creating hero section:", err.message || err);
-      setError(err.message || "Something went wrong");
+      console.error("Error creating catalog section:", err);
+      setError("this is error :" + err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -92,37 +125,67 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
         <Button onClick={() => setIsModalOpen(true)}>Add Catalog</Button>
       </FocusModal.Trigger>
       <FocusModal.Content>
-        <form id="heroForm" onSubmit={handleSubmit}>
+        <form id="catalogForm" onSubmit={handleSubmit}>
           <FocusModal.Header>
-            <Button type="submit" variant="primary" disabled={loading}>
-              {loading ? "Saving..." : "Save"}
+            <Button type="submit" variant="primary">
+              Save
             </Button>
           </FocusModal.Header>
           <FocusModal.Body className="flex flex-col items-center py-16">
             <div className="flex w-full max-w-lg flex-col gap-y-8">
               {error && <div className="text-red-500">{error}</div>}
-              <div className="flex flex-col gap-y-2">
-                <Label htmlFor="imageUpload" className="text-ui-fg-subtle">
-                  Image Link
-                </Label>
+              {/* <div className="flex flex-col gap-y-2">
+                <Label htmlFor="imageUpload">Image URL</Label>
                 <Input
                   id="imageUpload"
                   type="text"
-                  value={image}
+                  value={image instanceof File ? "" : image}
                   onChange={(e) => setImage(e.target.value)}
-                  className="mt-1"
+                  placeholder="Enter image URL or upload"
+                />
+              </div> */}
+              <div>
+                <label htmlFor="image">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => document.getElementById("images")?.click()}
+                    className="w-full h-[300px] border-ui-bg rounded-lg flex items-center justify-center p-0 overflow-hidden"
+                  >
+                    {responseImageLink ? (
+                      <img
+                        className="w-full h-full object-cover"
+                        src={responseImageLink}
+                        alt="Uploaded preview"
+                      />
+                    ) : loading ? (
+                      "uploading..."
+                    ) : (
+                      "Upload Image"
+                    )}
+                  </Button>
+                </label>
+                <input
+                  id="images"
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file instanceof File) {
+                      setImage(file);
+                      uploadImage();
+                    }
+                  }}
                 />
               </div>
               <div className="flex flex-col gap-y-2">
-                <Label htmlFor="link" className="text-ui-fg-subtle">
-                  Link
-                </Label>
+                <Label htmlFor="link">Link</Label>
                 <Input
                   id="link"
                   type="text"
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
-                  className="mt-1"
+                  placeholder="Enter link"
                 />
               </div>
             </div>
@@ -193,7 +256,7 @@ const CustomPage = () => {
                 deleteId={deleteId || ""}
                 image={section.image}
                 key={section.image} // Use a unique key (like ID)
-                setcatalogSections={setcatalogSections}
+                setCatalogSections={setcatalogSections}
                 setDeleteId={setDeleteId}
                 loading={loading}
               />

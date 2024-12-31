@@ -5,12 +5,425 @@ import {
   Drawer,
   Heading,
   Input,
+  ProgressTabs,
+  FocusModal,
+  toast,
   Label,
   Alert,
   Textarea,
 } from "@medusajs/ui";
 import { XMarkMini, ArrowLongUp, ArrowDownMini } from "@medusajs/icons";
 import axios from "axios";
+
+const HeroSectionForm = ({
+  setHeroSections,
+  instaialdata,
+  id,
+}: {
+  setHeroSections: (heroSections: any) => void;
+  instaialdata: any;
+  id: string;
+}) => {
+  const [image, setImage] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>(instaialdata.title);
+  const [subtitle, setSubtitle] = useState<string>(instaialdata.subtitle);
+  const [firstText, setFirstText] = useState<string>(instaialdata.firstText);
+  const [reponseimagelink, setResponseImageLink] = useState<string>(
+    instaialdata.reponseimagelink
+  );
+  const [secondText, setSecondText] = useState<string>(instaialdata.secondText);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCurrentTabCompleted, setIsCurrentTabCompleted] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "general" | "shipping" | "payment"
+  >("general");
+  const [status, setStatus] = useState<{
+    general: string;
+    shipping: string;
+    payment: string;
+  }>({
+    general: "idle",
+    shipping: "idle",
+    payment: "idle",
+  });
+
+  const tabs = ["general", "shipping", "payment"];
+
+  let isLastTab: any;
+
+  useEffect(() => {
+    setTitle(instaialdata.title);
+    setSubtitle(instaialdata.subtitle);
+    setFirstText(instaialdata.firstText);
+    setResponseImageLink(instaialdata.reponseimagelink);
+    setSecondText(instaialdata.secondText);
+  }, [instaialdata]);
+
+  useEffect(() => {
+    if (title.length >= 10 && subtitle.length >= 10) {
+      setStatus((prev) => ({ ...prev, general: "completed" }));
+    } else {
+      setStatus((prev) => ({ ...prev, general: "idle" }));
+    }
+
+    if (reponseimagelink) {
+      setStatus((prev) => ({ ...prev, shipping: "completed" }));
+    } else {
+      setStatus((prev) => ({ ...prev, shipping: "idle" }));
+    }
+
+    if (firstText && secondText) {
+      setStatus((prev) => ({ ...prev, payment: "completed" }));
+    } else {
+      setStatus((prev) => ({ ...prev, payment: "idle" }));
+    }
+
+    setIsCurrentTabCompleted(status[activeTab] === "completed");
+    isLastTab = activeTab === tabs[tabs.length - 1];
+  }, [title, subtitle, firstText, secondText]);
+
+  const handleNext = () => {
+    const currentTabIndex = tabs.indexOf(activeTab);
+
+    if (currentTabIndex < tabs.length - 1) {
+      setActiveTab(
+        tabs[currentTabIndex + 1] as "general" | "shipping" | "payment"
+      );
+    } else {
+      handleSubmit(new Event("submit", { cancelable: true, bubbles: true }) as any);
+    }
+  };
+
+  const submitvalidation = () => {
+    switch (activeTab) {
+      case "general":
+        if (title) {
+          toast.error(
+            "Title must be at least 10 characters long in the General tab"
+          );
+        } else if (subtitle.trim().length < 10) {
+          toast.error(
+            "Subtitle must be at least 10 characters long in the General tab"
+          );
+        }
+        break;
+      case "shipping":
+        if (!reponseimagelink) {
+          toast.error("Please fill the Image field in the Shipping tab");
+        }
+        break;
+      case "payment":
+        if (!firstText.trim()) {
+          toast.error("Please fill the First Text field in the Payment tab");
+        } else if (!secondText.trim()) {
+          toast.error("Please fill the Second Text field in the Payment tab");
+        }
+        break;
+      default:
+        toast.error("Please fill all fields");
+    }
+  };
+
+  const validateCurrentTab = () => {
+    if (activeTab === "general") {
+      if (title && subtitle) {
+        setStatus((prev) => ({ ...prev, general: "completed" }));
+        return true;
+      }
+    } else if (activeTab === "shipping") {
+      if (reponseimagelink) {
+        setStatus((prev) => ({ ...prev, shipping: "completed" }));
+        return true;
+      }
+    } else if (activeTab === "payment") {
+      if (firstText && secondText) {
+        setStatus((prev) => ({ ...prev, payment: "completed" }));
+        return true;
+      }
+    }
+    setStatus((prev) => ({ ...prev, [activeTab]: "error" }));
+    return false;
+  };
+
+  const updateHeroSection = async (id: string, payload: Partial<any>) => {
+    try {
+      const response = await fetch(`/admin/hero/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update hero section");
+      }
+
+      const data = await response.json();
+      setHeroSections((prevSections: any) =>
+        prevSections.map((section: any) =>
+          section.id === id ? { ...section, ...payload } : section
+        )
+      );
+
+      console.log("Hero section updated successfully:", data);
+
+      return data;
+    } catch (error: any) {
+      console.error("Error updating hero section:", error.message || error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const payload = {
+      title,
+      subtitle,
+      firsttext: firstText,
+      secondtext: secondText,
+      image: reponseimagelink,
+    };
+
+    try {
+      const result = await updateHeroSection(id, payload);
+      if (result) {
+        setIsModalOpen(false);
+      }
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (image) {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const response = await axios.post(
+          "http://148.135.138.221:4000/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization:
+                "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
+            },
+          }
+        );
+
+        setResponseImageLink(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    uploadImage();
+  }, [image]);
+
+  return (
+    <form id="heroForm" onSubmit={handleSubmit}>
+      <FocusModal open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <ProgressTabs
+          value={activeTab}
+          onValueChange={(value) =>
+            setActiveTab(value as "general" | "shipping" | "payment")
+          }
+        >
+          <FocusModal.Trigger asChild>
+            <Button onClick={() => setIsModalOpen(true)}>Edit Hero</Button>
+          </FocusModal.Trigger>
+          <FocusModal.Content>
+            <FocusModal.Header className="flex gap-0 p-0 px-2">
+              <Container className="p-0 rounded-none h-full mx-3 border-t-none border-r-0">
+                <ProgressTabs.List>
+                  <ProgressTabs.Trigger disabled={true} value="general">
+                    Give info
+                  </ProgressTabs.Trigger>
+                  <ProgressTabs.Trigger disabled={true} value="shipping">
+                    Image
+                  </ProgressTabs.Trigger>
+                  <ProgressTabs.Trigger disabled={true} value="payment">
+                    Button Text
+                  </ProgressTabs.Trigger>
+                </ProgressTabs.List>
+              </Container>
+            </FocusModal.Header>
+
+            <FocusModal.Body className=" pt-10 px-32">
+              <ProgressTabs.Content value="general">
+                <div className="flex flex-col gap-y-2 mb-3">
+                  <Label htmlFor="title" className="text-ui-fg-subtle ">
+                    Title
+                  </Label>
+                  <Input
+                    id="title"
+                    type="text"
+                    value={title}
+                    maxLength={50}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="mt-1 font-bold text-xl h-fit"
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <Label htmlFor="subtitle" className="text-ui-fg-subtle">
+                    Subtitle
+                  </Label>
+                  <Textarea
+                    id="subtitle"
+                    value={subtitle}
+                    maxLength={120}
+                    onChange={(e) => setSubtitle(e.target.value)}
+                    className="mt-1 h-[200px] resize-none font-semibold text-lg"
+                    placeholder="Product description ..."
+                  />
+                </div>
+              </ProgressTabs.Content>
+
+              <ProgressTabs.Content value="shipping">
+                <div>
+                  <label htmlFor="image">
+                    <Button
+                      variant="secondary"
+                      onClick={() => document.getElementById("image")?.click()}
+                      className="w-full h-[300px] border-ui-bg rounded-lg flex items-center justify-center p-0 overflow-hidden"
+                    >
+                      {reponseimagelink ? (
+                        loading ? (
+                          <>
+                            <div>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                fill="none"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="1.5"
+                                  d="M13.056 9.944v1.334c0 .982-.796 1.778-1.778 1.778H3.722a1.777 1.777 0 0 1-1.778-1.778V9.944M4.389 5.5 7.5 8.611 10.611 5.5M7.5 8.611V1.944"
+                                ></path>
+                              </svg>
+                            </div>
+                            <span className="text-ui-fg-subtle text-lg">
+                              {loading ? "Uploading..." : "Upload Image"}
+                            </span>
+                          </>
+                        ) : (
+                          <img
+                            className="w-full h-full object-cover"
+                            src={reponseimagelink}
+                            alt="image"
+                          />
+                        )
+                      ) : (
+                        <>
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="15"
+                              height="15"
+                              fill="none"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="1.5"
+                                d="M13.056 9.944v1.334c0 .982-.796 1.778-1.778 1.778H3.722a1.777 1.777 0 0 1-1.778-1.778V9.944M4.389 5.5 7.5 8.611 10.611 5.5M7.5 8.611V1.944"
+                              ></path>
+                            </svg>
+                          </div>
+                          <span className="text-ui-fg-subtle text-lg">
+                            {loading ? "Uploading..." : "Upload Image"}
+                          </span>
+                        </>
+                      )}
+                    </Button>
+                  </label>
+                  <input
+                    id="image"
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setImage(file);
+                      }
+                    }}
+                  />
+                </div>
+              </ProgressTabs.Content>
+
+              <ProgressTabs.Content value="payment">
+                <div>
+                  <Label htmlFor="firstText">First Text</Label>
+                  <Input
+                    id="firstText"
+                    value={firstText}
+                    onChange={(e) => setFirstText(e.target.value)}
+                  />
+                  <Label htmlFor="secondText">Second Text</Label>
+                  <Input
+                    id="secondText"
+                    value={secondText}
+                    onChange={(e) => setSecondText(e.target.value)}
+                  />
+                </div>
+              </ProgressTabs.Content>
+            </FocusModal.Body>
+
+            <FocusModal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  const currentTabIndex = tabs.indexOf(activeTab);
+                  if (currentTabIndex > 0) {
+                    setActiveTab(
+                      tabs[currentTabIndex - 1] as
+                        | "general"
+                        | "shipping"
+                        | "payment"
+                    );
+                  }
+                }}
+                disabled={tabs.indexOf(activeTab) === 0}
+              >
+                Previous
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!isCurrentTabCompleted) {
+                    console.log(title);
+                    submitvalidation();
+                    return;
+                  }
+                  if (validateCurrentTab()) handleNext();
+                }}
+              >
+                {isLastTab ? (loading ? "Saving..." : "Save") : "Continue"}
+              </Button>
+            </FocusModal.Footer>
+          </FocusModal.Content>
+        </ProgressTabs>
+      </FocusModal>
+    </form>
+  );
+};
 
 const Herocard = ({
   id,
@@ -136,8 +549,6 @@ const Herocard = ({
       });
   };
 
- 
-
   return (
     <div className="flex  w-full gap-2">
       <Container className="w-[9%] h-[250px] flex items-center justify-between flex-col">
@@ -156,7 +567,7 @@ const Herocard = ({
           <ArrowDownMini />
         </Button>
       </Container>
-      
+
       <Container className="divide-y p-0  h-[250px] flex flex-col item-center justify-center w-[90%]">
         <div className="flex items-center justify-between px-6 py-4 h-[50px]">
           <Heading level="h1">{title}</Heading>
@@ -184,93 +595,17 @@ const Herocard = ({
             <Button onClick={() => setDeleteId(id)} variant="danger">
               Delete <XMarkMini />
             </Button>
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-              <Drawer.Trigger asChild>
-                <Button>Edit Hero</Button>
-              </Drawer.Trigger>
-              <Drawer.Content>
-                <Drawer.Header>
-                  <Drawer.Title>Edit Hero</Drawer.Title>
-                </Drawer.Header>
-                <Drawer.Body className="p-4">
-                  <div className="flex w-full max-w-lg flex-col gap-y-8">
-                    <div className="flex flex-col gap-y-2">
-                      <Label htmlFor="title" className="text-ui-fg-subtle">
-                        Title
-                      </Label>
-                      <Input
-                        id="title"
-                        type="text"
-                        value={editTitle}
-                        maxLength={20}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <Label htmlFor="subtitle" className="text-ui-fg-subtle">
-                        Subtitle
-                      </Label>
-                      <Textarea
-                        id="subtitle"
-                        value={editSubtitle}
-                        maxLength={120}
-                        onChange={(e) => setEditSubtitle(e.target.value)}
-                        className="mt-1"
-                        placeholder="Product description ..."
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <Label
-                        htmlFor="imageUpload"
-                        className="text-ui-fg-subtle"
-                      >
-                        Image Link
-                      </Label>
-                      <Input
-                        id="imageUpload"
-                        type="text"
-                        value={editImage}
-                        onChange={(e) => setEditImage(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <Label htmlFor="firstText" className="text-ui-fg-subtle">
-                        First Text
-                      </Label>
-                      <Input
-                        id="firstText"
-                        type="text"
-                        value={editFirstText}
-                        maxLength={10}
-                        onChange={(e) => setEditFirstText(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <Label htmlFor="secondText" className="text-ui-fg-subtle">
-                        Second Text
-                      </Label>
-                      <Input
-                        id="secondText"
-                        type="text"
-                        value={editSecondText}
-                        maxLength={10}
-                        onChange={(e) => setEditSecondText(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                </Drawer.Body>
-                <Drawer.Footer>
-                  <Drawer.Close asChild>
-                    <Button variant="secondary">Cancel</Button>
-                  </Drawer.Close>
-                  <Button onClick={handleSave}>Save</Button>
-                </Drawer.Footer>
-              </Drawer.Content>
-            </Drawer>
+            <HeroSectionForm
+              setHeroSections={setHeroSections}
+              instaialdata={{
+                title,
+                subtitle,
+                firstText: firsttext,
+                secondText: secondtext,
+                reponseimagelink: image,
+              }}
+              id={id}
+            />
           </div>
         </div>
       </Container>
