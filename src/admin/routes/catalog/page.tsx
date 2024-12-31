@@ -42,13 +42,13 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
     null
   );
 
-  const uploadImage = async () => {
-    if (image instanceof File) {
+  const uploadImage = async (file: File) => {
+    if (file) {
       try {
         setLoading(true);
         const formData = new FormData();
-        formData.append("image", image);
-  
+        formData.append("image", file);
+
         const response = await axios.post(
           "http://148.135.138.221:4000/upload",
           formData,
@@ -60,21 +60,14 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
             },
           }
         );
-  
-        console.log("Upload Response:", response);
-        setResponseImageLink(response.data); // Adjust based on response structure
+
+        setResponseImageLink(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error uploading image:", error);
-        // setError("Failed to upload image");
-      } finally {
-        setLoading(false);
       }
-    } else {
-      setError("Please upload a valid image file");
     }
   };
-  
 
   const resetForm = () => {
     setImage(null);
@@ -172,8 +165,7 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file instanceof File) {
-                      setImage(file);
-                      uploadImage();
+                      uploadImage(file);
                     }
                   }}
                 />

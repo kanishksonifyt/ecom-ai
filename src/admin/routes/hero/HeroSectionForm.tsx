@@ -20,6 +20,8 @@ interface PostAdminCreateHerosectionPayload {
   subtitle: string;
   firsttext: string;
   secondtext: string;
+  firstbuttonroute?: string;
+  secoundbuttonroute?: string;
   image: string;
   index: number;
 }
@@ -49,6 +51,8 @@ const HeroSectionForm = ({
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [firstText, setFirstText] = useState("");
+  const [firstButtonRoute, setFirstButtonRoute] = useState("");
+  const [secondButtonRoute, setSecondButtonRoute] = useState("");
   const [reponseimagelink, setResponseImageLink] = useState("");
   const [secondText, setSecondText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -178,6 +182,8 @@ const HeroSectionForm = ({
       firsttext: firstText,
       secondtext: secondText,
       image: reponseimagelink,
+      firstbuttonroute: firstButtonRoute,
+      secoundbuttonroute: secondButtonRoute,
     };
 
     try {
@@ -201,6 +207,8 @@ const HeroSectionForm = ({
       setSubtitle("");
       setFirstText("");
       setSecondText("");
+      setFirstButtonRoute("");
+      setSecondButtonRoute("");
       setImage(null);
       setResponseImageLink("");
     } catch (err: any) {
@@ -375,7 +383,26 @@ const HeroSectionForm = ({
                     value={firstText}
                     onChange={(e) => setFirstText(e.target.value)}
                   />
+                  <div className="mt-4">
+                    <Label htmlFor="firstButtonRoute">First Button Route</Label>
+                    <Input
+                      id="firstButtonRoute"
+                      value={firstButtonRoute}
+                      onChange={(e) => setFirstButtonRoute(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <Label htmlFor="secondButtonRoute">
+                      Second Button Route
+                    </Label>
+                    <Input
+                      id="secondButtonRoute"
+                      value={secondButtonRoute}
+                      onChange={(e) => setSecondButtonRoute(e.target.value)}
+                    />
+                  </div>
                   <Label htmlFor="secondText">Second Text</Label>
+
                   <Input
                     id="secondText"
                     value={secondText}

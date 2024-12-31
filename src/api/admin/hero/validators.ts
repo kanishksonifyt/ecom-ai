@@ -7,6 +7,8 @@ export const PostAdminCreateHero = z.object({
   firsttext: z.string(),
   secondtext: z.string(),
   image: z.string(),
+  firstbuttonroute: z.string().optional(),
+  secoundbuttonroute: z.string().optional(),
   index: z.number().optional(),
 });
 
@@ -14,6 +16,8 @@ export const PostAdminCreateHero = z.object({
 export const PutAdminEditHero = z.object({
     title: z.string().optional(),
     subtitle: z.string().optional(),
+    firstbuttonroute: z.string().optional(),
+    secoundbuttonroute: z.string().optional(),
     firsttext: z.string().optional(),
     secondtext: z.string().optional(),
     image: z.string().optional(),

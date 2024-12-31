@@ -8,6 +8,14 @@ import Herocard from "./Herocard.js";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import axios from "axios";
 import HeroSectionForm from "./HeroSectionForm";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 interface PostAdminCreateHerosectionPayload {
   id: string;
@@ -17,6 +25,8 @@ interface PostAdminCreateHerosectionPayload {
   secondtext: string;
   image: string;
   index: number;
+  firstbuttonroute: string;
+  secoundbuttonroute: string;
 }
 
 const fetchHeroSections = async () => {
@@ -33,7 +43,6 @@ const fetchHeroSections = async () => {
   }
 };
 
-
 const CustomPage = () => {
   const [heroSections, setHeroSections] = useState<
     PostAdminCreateHerosectionPayload[]
@@ -43,6 +52,7 @@ const CustomPage = () => {
   const [updateId, setUpdateId] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
+    const [isDrawer, setIsDrawer] = useState(false);
   useEffect(() => {
     fetchHeroSections().then((data) => {
       if (data) {
@@ -105,7 +115,6 @@ const CustomPage = () => {
   //   setHeroSections(sortedHeroSections);
   // }, [heroSections]);
 
-
   function AlertSuccess() {
     return <Alert variant="success">Data updated successfully!</Alert>;
   }
@@ -120,7 +129,43 @@ const CustomPage = () => {
     }
   }, [showAlert]);
 
-  
+  useEffect(() => {
+    fetchHeroSections().then((data) => setHeroSections(Array.isArray(data) ? data : []));
+  }, []);
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    setIsDrawer(false);
+   
+    console.log(active, over);
+
+    if (over && active.id !== over.id) {
+      setHeroSections((prevSections) => {
+        const oldIndex = prevSections.findIndex(
+          (section) => section.id === active.id
+        );
+        const newIndex = prevSections.findIndex(
+          (section) => section.id === over.id
+        );
+
+        const updatedSections = arrayMove(prevSections, oldIndex, newIndex);
+
+        axios
+          .patch(`/admin/hero/${active.id}`, { newIndex: newIndex + 1 })
+          .then((response) => {
+            setShowAlert(true);
+            console.log("Index updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating hero section order:", error.message || error);
+          });
+
+        return updatedSections;
+      });
+    }
+
+  }
+
   return (
     <>
       <Container className="divide-y p-0">
@@ -129,27 +174,36 @@ const CustomPage = () => {
           <HeroSectionForm setHeroSections={setHeroSections} />
         </div>
       </Container>
-      <div className="flex flex-col gap-2">
-        {heroSections.length > 0 ? (
-          heroSections.map((section, index) => (
-            <Herocard
-              key={heroSections[index].index}
-              id={section.id}
-              title={section.title}
-              subtitle={section.subtitle}
-              sectionIndex={section.index}
-              firsttext={section.firsttext}
-              secondtext={section.secondtext}
-              setDeleteId={setDeleteId}
-              setShowAlert={setShowAlert}
-              image={section.image}
-              setHeroSections={setHeroSections}
-            />
-          ))
-        ) : (
-          <Text>No Hero Sections Available</Text>
-        )}
-      </div>
+      <DndContext
+        onDragStart={() => setIsDrawer(true)}
+        onDragEnd={(event) => onDragEnd(event)}
+        collisionDetection={closestCenter}
+      >
+        <SortableContext items={heroSections} strategy={verticalListSortingStrategy}>
+          {heroSections.length > 0 ? (
+            heroSections.map((section, index) => (
+              <Herocard
+                key={heroSections[index].index}
+                id={section.id}
+                title={section.title}
+                subtitle={section.subtitle}
+                isDrawer={isDrawer}
+                sectionIndex={section.index}
+                firsttext={section.firsttext}
+                secondtext={section.secondtext}
+                firstbuttonroute={section.firstbuttonroute}
+                secoundbuttonroute={section.secoundbuttonroute}
+                setDeleteId={setDeleteId}
+                setShowAlert={setShowAlert}
+                image={section.image}
+                setHeroSections={setHeroSections}
+              />
+            ))
+          ) : (
+            <Text>No Hero Sections Available</Text>
+          )}
+        </SortableContext>
+      </DndContext>
     </>
   );
 };

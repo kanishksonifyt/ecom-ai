@@ -14,6 +14,9 @@ import {
 } from "@medusajs/ui";
 import { XMarkMini, ArrowLongUp, ArrowDownMini } from "@medusajs/icons";
 import axios from "axios";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { DotsSix, Link } from "@medusajs/icons";
 
 const HeroSectionForm = ({
   setHeroSections,
@@ -31,7 +34,14 @@ const HeroSectionForm = ({
   const [reponseimagelink, setResponseImageLink] = useState<string>(
     instaialdata.reponseimagelink
   );
+
+  const [firstButtonRoute, setFirstButtonRoute] = useState<string>(
+    instaialdata.firstButtonRoute
+  );
   const [secondText, setSecondText] = useState<string>(instaialdata.secondText);
+  const [secondButtonRoute, setSecondButtonRoute] = useState<string>(
+    instaialdata.secondButtonRoute
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +69,8 @@ const HeroSectionForm = ({
     setFirstText(instaialdata.firstText);
     setResponseImageLink(instaialdata.reponseimagelink);
     setSecondText(instaialdata.secondText);
+    setFirstButtonRoute(instaialdata.firstButtonRoute);
+    setSecondButtonRoute(instaialdata.secoundbuttonroute);
   }, [instaialdata]);
 
   useEffect(() => {
@@ -92,7 +104,9 @@ const HeroSectionForm = ({
         tabs[currentTabIndex + 1] as "general" | "shipping" | "payment"
       );
     } else {
-      handleSubmit(new Event("submit", { cancelable: true, bubbles: true }) as any);
+      handleSubmit(
+        new Event("submit", { cancelable: true, bubbles: true }) as any
+      );
     }
   };
 
@@ -188,6 +202,8 @@ const HeroSectionForm = ({
       firsttext: firstText,
       secondtext: secondText,
       image: reponseimagelink,
+      firstbuttonroute: firstButtonRoute,
+      secoundbuttonroute: secondButtonRoute,
     };
 
     try {
@@ -377,6 +393,24 @@ const HeroSectionForm = ({
                     value={firstText}
                     onChange={(e) => setFirstText(e.target.value)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="firstButtonRoute">First Button Route</Label>
+                  <Input
+                    id="firstButtonRoute"
+                    value={firstButtonRoute}
+                    onChange={(e) => setFirstButtonRoute(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="secondButtonRoute">Second Button Route</Label>
+                  <Input
+                    id="secondButtonRoute"
+                    value={secondButtonRoute}
+                    onChange={(e) => setSecondButtonRoute(e.target.value)}
+                  />
+                </div>
+                <div>
                   <Label htmlFor="secondText">Second Text</Label>
                   <Input
                     id="secondText"
@@ -431,9 +465,12 @@ const Herocard = ({
   subtitle,
   firsttext,
   secondtext,
+  isDrawer,
   image,
   setShowAlert,
   key,
+  secoundbuttonroute,
+  firstbuttonroute,
   sectionIndex,
   setHeroSections,
   setDeleteId,
@@ -441,6 +478,9 @@ const Herocard = ({
   id: string;
   title: string;
   subtitle: string;
+  isDrawer : boolean;
+  secoundbuttonroute: string;
+  firstbuttonroute: string;
   firsttext: string;
   secondtext: string;
   image: string;
@@ -455,7 +495,19 @@ const Herocard = ({
   const [editSubtitle, setEditSubtitle] = useState(subtitle);
   const [editImage, setEditImage] = useState(image);
   const [editFirstText, setEditFirstText] = useState(firsttext);
+  const [editsecoundbuttonroute, seteditSecoundbuttonroute] =
+    useState(secoundbuttonroute);
+  const [editfirstbuttonroute, seteditFirstbuttonroute] =
+    useState(firstbuttonroute);
   const [editSecondText, setEditSecondText] = useState(secondtext);
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: id,
+    });
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -497,6 +549,8 @@ const Herocard = ({
       subtitle: editSubtitle,
       image: editImage,
       firsttext: editFirstText,
+      firstbuttonroute: editfirstbuttonroute,
+      secoundbuttonroute: editsecoundbuttonroute,
       secondtext: editSecondText,
     };
 
@@ -550,22 +604,16 @@ const Herocard = ({
   };
 
   return (
-    <div className="flex  w-full gap-2">
-      <Container className="w-[9%] h-[250px] flex items-center justify-between flex-col">
-        <Button
-          onClick={() => handleMove("up")}
-          variant="secondary"
-          className="w-[50px] h-[50px]"
-        >
-          <ArrowLongUp />
-        </Button>
-        <Button
-          onClick={() => handleMove("down")}
-          variant="secondary"
-          className="w-[50px] h-[50px]"
-        >
-          <ArrowDownMini />
-        </Button>
+    <div style={style} className="flex  w-full gap-2">
+      <Container
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        className={`w-[9%] h-full flex items-center justify-center ${
+          isDrawer ? "cursor-grabbing" : "cursor-grab"
+        }`}
+      >
+        <DotsSix className="w-fit h-fit" />
       </Container>
 
       <Container className="divide-y p-0  h-[250px] flex flex-col item-center justify-center w-[90%]">
@@ -603,6 +651,8 @@ const Herocard = ({
                 firstText: firsttext,
                 secondText: secondtext,
                 reponseimagelink: image,
+                firstButtonRoute: firstbuttonroute,
+                secoundbuttonroute: secoundbuttonroute,
               }}
               id={id}
             />

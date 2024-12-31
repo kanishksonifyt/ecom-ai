@@ -7,5 +7,7 @@ export const Hero = model.define("hero", {
   subtitle: model.text(),
   firsttext: model.text(),
   secondtext: model.text(),
+  firstbuttonroute : model.text().nullable(),
+  secoundbuttonroute : model.text().nullable(),
   image: model.text(),
 });

@@ -17,6 +17,7 @@ export const POST = async (
     req: MedusaRequest<PostAdminCreateReviewType>,
     res: MedusaResponse
   ) => {
+    console.log(req.body);
     const { result } = await createReviewWorkflow(req.scope).run({
       input: { 
         ...req.body, 

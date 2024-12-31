@@ -17,17 +17,19 @@ import Featuredcard from "./Featuredcard.js";
 import axios from "axios";
 
 interface PostAdminCreatereviewPayload {
+  id: string;
   title: string;
   description: string;
   rating: number;
   user_name: string;
   date: Date;
+  user_pic: string | null;
 }
 
 const fetchReview = async () => {
   try {
     const response = await fetch("/admin/review");
-    if (!response.ok) {
+    if (!response) {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
@@ -72,6 +74,7 @@ function Addreview({
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [user_pic, setUser_pic] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const resetForm = () => {
@@ -93,6 +96,7 @@ function Addreview({
       rating,
       user_name,
       date,
+      user_pic,
     };
 
     try {
@@ -149,6 +153,33 @@ function Addreview({
     }
   }, [selectedReview]);
 
+  const uploadImage = async (file: File) => {
+    if (file) {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const response = await axios.post(
+          "http://148.135.138.221:4000/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization:
+                "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
+            },
+          }
+        );
+
+        setUser_pic(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+
   return (
     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <Drawer.Trigger asChild>
@@ -181,6 +212,44 @@ function Addreview({
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
             </Label>
+            <input type="file" id="user_pic" className="hidden" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    uploadImage(file);
+                  }
+                }} />
+                <Label className="mt-4" htmlFor="user_pic">User pic</Label>
+            <Container className="flex flex-col gap-y-2 h-[80px]  w-[80px] p-0 overflow-hidden justify-center items-center">
+              {user_pic ? (
+                loading ? (
+                  "uploading..."
+                ) : (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => document.getElementById("user_pic")?.click()}
+                    className="text-gray-500 w-full h-full p-0"
+                  >
+                    <img
+                      src={user_pic}
+                      alt="highlight"
+                      className="w-full h-full object-cover"
+                    />
+                  </Button>
+                )
+              ) : loading ? (
+                "uploading..."
+              ) : (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => document.getElementById("user_pic")?.click()}
+                  className="text-gray-500 w-full h-full "
+                >
+                  Click to upload user Pic
+                </Button>
+              )}
+            </Container>
             <Label>
               <Text>User Name</Text>
               <Input
@@ -216,6 +285,7 @@ const CustomPage = () => {
     useState<PostAdminCreatereviewPayload | null>(null);
 
   useEffect(() => {
+    console.log("Fetching reviews...");
     fetchReview().then((data) => setReview(Array.isArray(data) ? data : []));
   }, []);
 
@@ -253,8 +323,13 @@ const CustomPage = () => {
                   <strong>Rating:</strong> {review.rating}
                 </p>
                 <p>
-                  <strong>Title:</strong> {review.title}
+                  <strong>Title:</strong> {review.title} 
                 </p>
+               {review.user_pic &&  (
+                <div className="flex gap-2">
+                  <strong>user Pic:</strong> <img src={review.user_pic} className="size-[80px] rounded" alt="" /> 
+                </div>
+               )}
                 <p>
                   <strong>User Name:</strong> {review.user_name}
                 </p>

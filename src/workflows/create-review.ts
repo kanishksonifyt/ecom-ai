@@ -13,6 +13,7 @@ export type CreateReviewStepInput = {
     title: string;
     description: string;
     user_name: string;
+    user_pic?: string;
     date: Date;
 };
 
@@ -94,6 +95,7 @@ export type EditReviewStepInput = {
     title?: string;
     description?: string;
     user_name?: string;
+    user_pic?: string;
     date?: Date;
 };
 
@@ -109,6 +111,7 @@ export const editReviewStep = createStep(
             description: input.description,
             user_name: input.user_name,
             date: input.date,
+            user_pic: input.user_pic,
         });
 
         return new StepResponse(updatedReview, updatedReview.id);
