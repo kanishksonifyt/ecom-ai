@@ -8,4 +8,5 @@ export const Review = model.define("review", {
   user_name: model.text(),
   date : model.dateTime(),
   user_pic : model.text().nullable(),
+  product_id : model.text().nullable(),
 });

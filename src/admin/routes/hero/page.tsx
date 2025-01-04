@@ -2,7 +2,15 @@ import { defineRouteConfig } from "@medusajs/admin-sdk";
 import { PuzzleSolid } from "@medusajs/icons";
 import { Alert, Container } from "@medusajs/ui";
 import React, { useEffect, useState } from "react";
-import { Button, FocusModal, Heading, Input, Label, Text } from "@medusajs/ui";
+import {
+  Button,
+  FocusModal,
+  Heading,
+  Input,
+  Label,
+  Text,
+  toast,
+} from "@medusajs/ui";
 import { Textarea } from "@medusajs/ui";
 import Herocard from "./Herocard.js";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -52,7 +60,7 @@ const CustomPage = () => {
   const [updateId, setUpdateId] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
-    const [isDrawer, setIsDrawer] = useState(false);
+  const [isDrawer, setIsDrawer] = useState(false);
   useEffect(() => {
     fetchHeroSections().then((data) => {
       if (data) {
@@ -102,6 +110,10 @@ const CustomPage = () => {
         if (data) {
           setHeroSections(data);
         }
+        toast.dismiss();
+        toast.success("Success", {
+          description: "Hero deleted successfully",
+        });
       });
     } catch (error: any) {
       console.error("Error deleting hero section:", error.message || error);
@@ -130,13 +142,15 @@ const CustomPage = () => {
   }, [showAlert]);
 
   useEffect(() => {
-    fetchHeroSections().then((data) => setHeroSections(Array.isArray(data) ? data : []));
+    fetchHeroSections().then((data) =>
+      setHeroSections(Array.isArray(data) ? data : [])
+    );
   }, []);
 
   function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     setIsDrawer(false);
-   
+
     console.log(active, over);
 
     if (over && active.id !== over.id) {
@@ -154,16 +168,21 @@ const CustomPage = () => {
           .patch(`/admin/hero/${active.id}`, { newIndex: newIndex + 1 })
           .then((response) => {
             setShowAlert(true);
-            console.log("Index updated successfully");
+            toast.dismiss();
+            toast.success("Success", {
+              description: "Index updated successfully",
+            });
           })
           .catch((error) => {
-            console.error("Error updating hero section order:", error.message || error);
+            console.error(
+              "Error updating hero section order:",
+              error.message || error
+            );
           });
 
         return updatedSections;
       });
     }
-
   }
 
   return (
@@ -179,7 +198,10 @@ const CustomPage = () => {
         onDragEnd={(event) => onDragEnd(event)}
         collisionDetection={closestCenter}
       >
-        <SortableContext items={heroSections} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={heroSections}
+          strategy={verticalListSortingStrategy}
+        >
           {heroSections.length > 0 ? (
             heroSections.map((section, index) => (
               <Herocard

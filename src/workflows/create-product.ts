@@ -72,20 +72,26 @@ export const getAllProductsWorkflow = createWorkflow(
     }
 )
 
+type GetProductByIdWorkflowInput = {
+  id: string
+}
 
 const getProductByIdStep = createStep(
   "get-product-by-id",
-  async ({ productId }, { container }) => {
+  async ( input: GetProductByIdWorkflowInput , { container }) => {
     const productService = container.resolve(Modules.PRODUCT)
-    const product = await productService.retrieveProduct(productId)
+    const product = await productService.retrieveProduct(input.id)
     return new StepResponse({ product })
   }
 )
 
+
+
+
 export const getProductByIdWorkflow = createWorkflow(
   "get-product-by-id",
-  ({ productId }) => {
-    const { product } = getProductByIdStep()
+  (input: GetProductByIdWorkflowInput) => {
+    const { product } = getProductByIdStep(input)
     return new WorkflowResponse({
       product,
     })

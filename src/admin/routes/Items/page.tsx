@@ -1,6 +1,3 @@
-import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Pencil } from "@medusajs/icons";
-import { Container } from "@medusajs/ui";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -9,11 +6,11 @@ import {
   Input,
   Label,
   Text,
+  Container,
   Drawer,
   Switch,
 } from "@medusajs/ui";
-import Featuredcard from "./Featuredcard.js";
-import axios from "axios";
+
 
 interface PostAdminCreateFeaturedsectionPayload {
   id: string;

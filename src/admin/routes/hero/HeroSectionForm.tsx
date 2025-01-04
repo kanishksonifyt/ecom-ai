@@ -211,6 +211,10 @@ const HeroSectionForm = ({
       setSecondButtonRoute("");
       setImage(null);
       setResponseImageLink("");
+      toast.dismiss();
+      toast.success("Success", {
+        description: "Hero section created successfully",
+      });
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -249,6 +253,10 @@ const HeroSectionForm = ({
           );
 
           setResponseImageLink(response.data);
+          toast.dismiss();
+          toast.success("Success", {
+            description: "Image uploaded successfully",
+          });
           setLoading(false);
         } catch (error) {
           console.error("Error uploading image:", error);

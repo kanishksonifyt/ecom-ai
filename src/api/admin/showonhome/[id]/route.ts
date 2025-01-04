@@ -3,11 +3,11 @@ import {
   deleteShowonHomeWorkflow,
   createShowonHomeWorkflow,
 } from "../../../../workflows/create-showonhome";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { RemoteLink } from "@medusajs/framework/modules-sdk";
+import { ITEM_MODULE } from "../../../../modules/item";
 
-export const DELETE = async  (
-  req: MedusaRequest,
-  res: MedusaResponse
-) => {
+export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const { id } = req.params;
     console.log("route hit", id);
@@ -19,7 +19,7 @@ export const DELETE = async  (
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 // ...
 import { z } from "zod";
@@ -34,10 +34,26 @@ export const POST = async (
   res: MedusaResponse
 ) => {
   const { id: product_id } = req.params;
+
+  const remoteLink: RemoteLink = req.scope.resolve(
+    ContainerRegistrationKeys.REMOTE_LINK
+  );
+
   console.log("route hit", product_id);
   const { result } = await createShowonHomeWorkflow(req.scope).run({
     input: { product_id },
   });
 
-  res.json({ brand: result });
+  if (req.body.product_id) {
+    await remoteLink.create({
+      [Modules.PRODUCT]: {
+        product_id: req.body.product_id,
+      },
+      [ITEM_MODULE]: {
+        item_id: result.id,
+      },
+    });
+  }
+
+  res.json({ Show_on_home: result });
 };

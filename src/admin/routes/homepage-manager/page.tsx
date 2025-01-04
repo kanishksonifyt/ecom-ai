@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Link, Pencil,DotsSix } from "@medusajs/icons";
+import { Link, Pencil, DotsSix } from "@medusajs/icons";
 import {
   Container,
   Button,
@@ -7,6 +7,7 @@ import {
   Heading,
   Input,
   Label,
+  toast,
   Text,
 } from "@medusajs/ui";
 import React, { useEffect, useState } from "react";
@@ -30,7 +31,6 @@ interface PostAdminCreatereviewPayload {
 }
 
 interface PostAdminMangeroutePayload extends PostAdminCreatereviewPayload {
-  
   index: number;
 }
 
@@ -78,7 +78,7 @@ const routes = [
 const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
   const [title, setTitle] = useState<string>(initialData?.title || "");
   const [route, setRoute] = useState<string>(initialData?.route || "");
-  const [text , setText] = useState<string>(initialData?.text || "");
+  const [text, setText] = useState<string>(initialData?.text || "");
   const [redirect, setRedirect] = useState<string>(initialData?.redirect || "");
   const [index = 0, setIndex] = useState<number>(initialData?.index || 0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -90,7 +90,7 @@ const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, route, index , text , redirect }),
+        body: JSON.stringify({ title, route, index, text, redirect }),
       });
       if (!response.ok) {
         throw new Error("Failed to save route");
@@ -130,29 +130,26 @@ const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
               placeholder="Route"
             />
           </Label>
-          {
-            isUpdate && (
-              <>
-                
-                <Label>
-                  <Text>Redirect</Text>
-                  <Input
-                    value={redirect}
-                    onChange={(e) => setRedirect(e.target.value)}
-                    placeholder="Redirect"
-                  />
-                </Label>
-                <Label>
-                  <Text>Text on Button</Text>
-                  <Input
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Text"
-                  />
-                </Label>
-              </>
-            )
-          }
+          {isUpdate && (
+            <>
+              <Label>
+                <Text>Redirect</Text>
+                <Input
+                  value={redirect}
+                  onChange={(e) => setRedirect(e.target.value)}
+                  placeholder="Redirect"
+                />
+              </Label>
+              <Label>
+                <Text>Text on Button</Text>
+                <Input
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Text"
+                />
+              </Label>
+            </>
+          )}
         </Drawer.Body>
         <Drawer.Footer>
           <Drawer.Close asChild>
@@ -220,8 +217,12 @@ const CustomPage = () => {
   function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     setIsDrawer(false);
-   
+
     console.log(active, over);
+
+    // toast.loading("Updating index", {
+    //   description: "Updating index of the section",
+    // })
 
     if (over && active.id !== over.id) {
       setHome((prevSections) => {
@@ -236,13 +237,20 @@ const CustomPage = () => {
 
         axios
           .patch(`/admin/home/${active.id}`, { newIndex: newIndex + 1 })
-          .then(() => console.log("Index updated successfully"))
-          .catch((error) => console.error("Error updating index:", error));
+          .then(() => {
+            toast.dismiss();
+            toast.success("Success", {
+              description: "Index updated successfully",
+            });
+          })
+          .catch((error) => {
+            toast.dismiss();
+            console.error("Error updating index:", error);
+          });
 
         return updatedSections;
       });
     }
-
   }
 
   console.log(home);
@@ -255,24 +263,24 @@ const CustomPage = () => {
           <AddOrUpdateRoute />
         </div>
       </Container>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-x-hidden px-2 py-2">
         <DndContext
-          onDragStart={()=>setIsDrawer(true)}
+          onDragStart={() => setIsDrawer(true)}
           onDragEnd={(event) => onDragEnd(event)}
           collisionDetection={closestCenter}
         >
           <SortableContext items={home} strategy={verticalListSortingStrategy}>
-          {home.map((route) => (
-           <Card 
-            key={route.id}
-            route={route}
-            deleteroute={deleteroute}
-            navigate={navigate}
-            AddOrUpdateRoute={AddOrUpdateRoute}
-            setHome={setHome}
-            isDrawer={isDrawer}
-            />
-          ))}
+            {home.map((route) => (
+              <Card
+                key={route.id}
+                route={route}
+                deleteroute={deleteroute}
+                navigate={navigate}
+                AddOrUpdateRoute={AddOrUpdateRoute}
+                setHome={setHome}
+                isDrawer={isDrawer}
+              />
+            ))}
           </SortableContext>
         </DndContext>
       </div>

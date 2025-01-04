@@ -14,6 +14,7 @@ import {
   Switch,
 } from "@medusajs/ui";
 import Featuredcard from "./Featuredcard.js";
+
 import axios from "axios";
 
 interface PostAdminCreatereviewPayload {
@@ -212,13 +213,20 @@ function Addreview({
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
             </Label>
-            <input type="file" id="user_pic" className="hidden" onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    uploadImage(file);
-                  }
-                }} />
-                <Label className="mt-4" htmlFor="user_pic">User pic</Label>
+            <input
+              type="file"
+              id="user_pic"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  uploadImage(file);
+                }
+              }}
+            />
+            <Label className="mt-4" htmlFor="user_pic">
+              User pic
+            </Label>
             <Container className="flex flex-col gap-y-2 h-[80px]  w-[80px] p-0 overflow-hidden justify-center items-center">
               {user_pic ? (
                 loading ? (
@@ -309,11 +317,21 @@ const CustomPage = () => {
       {review.map((review) => (
         <Container key={review.title} className="divide-y ">
           <div>
-            <h2>Details</h2>
+            <h2>Review</h2>
             <div className="flex justify-between">
-              <div>
+              {review.user_pic && (
+                <div className="flex gap-2 flex-col">
+                  <strong>user Pic</strong>{" "}
+                  <img
+                    src={review.user_pic}
+                    className="size-[80px] rounded object-cover"
+                    alt=""
+                  />
+                </div>
+              )}
+              <div className="w-[70%]">
                 <p>
-                  <strong>Created At:</strong> 2024-12-28T09:28:09.830Z
+                  <strong>Review:</strong> 2024-12-28T09:28:09.830Z
                 </p>
 
                 <p>
@@ -323,13 +341,9 @@ const CustomPage = () => {
                   <strong>Rating:</strong> {review.rating}
                 </p>
                 <p>
-                  <strong>Title:</strong> {review.title} 
+                  <strong>Title:</strong> {review.title}
                 </p>
-               {review.user_pic &&  (
-                <div className="flex gap-2">
-                  <strong>user Pic:</strong> <img src={review.user_pic} className="size-[80px] rounded" alt="" /> 
-                </div>
-               )}
+
                 <p>
                   <strong>User Name:</strong> {review.user_name}
                 </p>
@@ -354,6 +368,47 @@ const CustomPage = () => {
         </Container>
       ))}
     </>
+  );
+};
+
+const product_com = () => {
+
+
+  
+
+
+  return (
+    <Container
+      key={item.id}
+      className="mt-2"
+    >
+      <Heading level="h3" className="text-2xl mb-4">
+        {item.title}
+      </Heading>
+      <Label htmlFor={`product-${item.id}`} className="space-y-2">
+        <Text>
+          <strong>ID:</strong> {item.id}
+        </Text>
+        <Text>
+          <strong>Description:</strong> {item.description}
+        </Text>
+        <div className="flex items-center space-x-4">
+          <strong>Thumbnail:</strong>
+          {item.thumbnail ? (
+            <img
+              src={item.thumbnail}
+              alt="Thumbnail"
+              className="w-20 h-20 object-cover rounded-md"
+            />
+          ) : (
+            <span className="text-gray-500">No Thumbnail Available</span>
+          )}
+        </div>
+        <Text>
+          <strong>Status:</strong> {item.status}
+        </Text>
+      </Label>
+    </Container>
   );
 };
 
