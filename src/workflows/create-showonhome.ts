@@ -9,6 +9,7 @@ import ShowonhomepageModuleService from "../modules/showathome/service";
 
 export type CreateShowonHomeStepInput = {
   product_id: string;
+  show_on_homepage: boolean;
 };
 
 export const createShowonHomeStep = createStep(
@@ -17,9 +18,10 @@ export const createShowonHomeStep = createStep(
     const ShowonhomeModuleService: ShowonhomepageModuleService =
       container.resolve(SHOWONHOME_MODULE);
 
-    const showonhome = await ShowonhomeModuleService.createShow_on_homepages(
-      input
-    );
+    const showonhome = await ShowonhomeModuleService.createShow_on_homepages({
+      product_id: input.product_id,
+      show_on_homepage: true,
+    });
 
     return new StepResponse(showonhome);
   }
@@ -29,12 +31,14 @@ export const createShowonHomeStep = createStep(
 
 type CreateShowonHomeWorkflowInput = {
   product_id: string;
+  show_on_homepage: boolean;
 };
 
 export const createShowonHomeWorkflow = createWorkflow(
-  "create-brand",
+  "create-showonhome",
   (input: CreateShowonHomeWorkflowInput) => {
-    const brand = createShowonHomeStep(input);
+    const brand = createShowonHomeStep({ ...input, show_on_homepage: true });
+    
 
     return new WorkflowResponse(brand);
   }
@@ -76,6 +80,7 @@ export const deleteShowonHomeWorkflow = createWorkflow(
   );
 export type GetShowonHomeStepInput = {
   id: string;
+  product_id: string;
 };
 
 export const getShowonHomeStep = createStep(
@@ -93,13 +98,15 @@ export const getShowonHomeStep = createStep(
 );
 
 type GetShowonHomeWorkflowInput = {
+  id: string;
   product_id: string;
+  
 };
 
 export const getShowonHomeWorkflow = createWorkflow(
   "get-showonhome",
   (input: GetShowonHomeWorkflowInput) => {
-    const showonhome = getShowonHomeStep(input);
+    const showonhome = getShowonHomeStep({ id: input.id, product_id: input.product_id });
 
     return new WorkflowResponse(showonhome);
   }
@@ -111,9 +118,9 @@ export const getAllShowonHomeStep = createStep(
     const ShowonhomeModuleService: ShowonhomepageModuleService =
       container.resolve(SHOWONHOME_MODULE);
 
-    const showonhome = await ShowonhomeModuleService.listShow_on_homepages();
+    const showonhome = await ShowonhomeModuleService.listShow_on_homepages({});
 
-    return new StepResponse(showonhome, showonhome.map(item => item.id));
+    return new StepResponse(showonhome, showonhome.id);
   }
 );
 
