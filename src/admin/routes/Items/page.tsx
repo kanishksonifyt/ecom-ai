@@ -9,8 +9,8 @@ import {
   Container,
   Drawer,
   Switch,
+  toast,
 } from "@medusajs/ui";
-
 
 interface PostAdminCreateFeaturedsectionPayload {
   id: string;
@@ -35,16 +35,21 @@ interface PostAdminCreatedataPayload {
   product_id: string;
 }
 
+interface Managedatawithproductdataandshowonhome
+  extends PostAdminCreateFeaturedsectionPayload {
+  show_on_home_id: string | null;
+}
+
 const fetchFeaturedSections = async () => {
   try {
-    const response = await fetch("/admin/product");
+    const response = await fetch("/admin/showonhome/gpwna");
     if (!response.ok) {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
     console.log("Featured sections fetched successfully:", data);
     console.log("Featured sections fetched successfully:", data);
-    return data.result.products;
+    return data.showonhome;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
   }
@@ -58,7 +63,7 @@ type FeaturedSectionFormProps = {
 
 const fetchdata = async () => {
   try {
-    const response = await fetch("/admin/showonhome/");
+    const response = await fetch("/admin/showonhome/gp");
     if (!response.ok) {
       throw new Error("Failed to fetch hero sections");
     }
@@ -94,7 +99,6 @@ const Addredirect = () => {
 
       setText(data.home.result.text);
       console.log("Route data fetched successfully:", data.home.result);
-
     } catch (error) {
       console.error("Error fetching route data:", error);
     }
@@ -168,30 +172,15 @@ const Addredirect = () => {
 };
 
 const HighlightSectionForm = ({
-  setfeaturedSections,
-  featuredSections,
-  filteredindsData,
+  setData,
+  data,
 }: {
-  setfeaturedSections: React.Dispatch<
-    React.SetStateAction<PostAdminCreateFeaturedsectionPayload[]>
-  >;
-  featuredSections: PostAdminCreateFeaturedsectionPayload[];
-  filteredindsData: PostAdminCreateFilterdataPayload[];
+  setData: React.Dispatch<Managedatawithproductdataandshowonhome[]>;
+  data: Managedatawithproductdataandshowonhome[];
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState<
     PostAdminCreateFeaturedsectionPayload[]
   >([]);
-  const [selectedproductid, setSelectedproductid] = useState<string | null>(
-    null
-  );
-
-  const [filteredindData, setfilteredData] = useState<
-    PostAdminCreateFeaturedsectionPayload[]
-  >([]);
-  const [data, setData] = useState<PostAdminCreatedataPayload[]>([]);
 
   useEffect(() => {
     fetchFeaturedSections().then((data) => {
@@ -200,28 +189,11 @@ const HighlightSectionForm = ({
         setProduct(data);
       }
     });
-  }, []);
-
-  useEffect(() => {
-    fetchdata().then((data) => {
-      if (data) {
-        console.log(data);
-        setData(data);
-      }
-    });
-  }, [featuredSections]);
-
-  useEffect(() => {
-    fetchdata().then((data) => {
-      if (data) {
-        console.log(data);
-        setData(data);
-      }
-    });
-  }, []);
+  }, [data]);
 
   const addproductonhomepage = async (product_id: string) => {
     try {
+      setInterval(() => {}, 1000);
       const response = await fetch(`/admin/showonhome/${product_id}`, {
         method: "POST",
         headers: {
@@ -234,18 +206,22 @@ const HighlightSectionForm = ({
       console.log("Product added on homepage successfully");
       const updatedHeroSections = await fetchFeaturedSections();
       if (updatedHeroSections) {
-        const filteredData: PostAdminCreateFeaturedsectionPayload[] =
-          updatedHeroSections.filter(
-            (section: PostAdminCreateFeaturedsectionPayload) =>
-              !data.some(
-                (item: PostAdminCreatedataPayload) =>
-                  item.product_id === section.id
-              )
-          );
-        setfilteredData(filteredData);
-        setfeaturedSections(filteredData);
-        setProduct(filteredData);
-        window.location.reload();
+        fetchFeaturedSections().then((data) => {
+          if (data) {
+            console.log(data);
+            setProduct(data);
+          }
+        });
+
+        fetchdata().then((data) => {
+          if (data) {
+            console.log(data);
+            setData(data);
+          }
+        });
+        toast.success("success", {
+          description: "Product added on homepage successfully",
+        });
       }
     } catch (error: any) {
       console.error("Error fetching hero sections:", error.message || error);
@@ -268,7 +244,13 @@ const HighlightSectionForm = ({
       if (updatedHeroSections) {
         setProduct(updatedHeroSections);
       }
-      window.location.reload();
+      fetchdata().then((data) => {  
+        if (data) {
+          console.log(data);
+          setData(data);
+        }
+      }
+      );
     } catch (error: any) {
       console.error(
         "Error removing product from homepage:",
@@ -278,14 +260,6 @@ const HighlightSectionForm = ({
   };
 
   useEffect(() => {}, [product]);
-
-  useEffect(() => {
-    const filteredData = product.filter(
-      (section) => !data.some((item) => item.product_id === section.id)
-    );
-    console.log(filteredData, "sdjvhbdsbvb");
-    setfilteredData(filteredData);
-  }, [data, product]);
 
   return (
     <Drawer>
@@ -300,7 +274,37 @@ const HighlightSectionForm = ({
           <Heading level="h1">
             Select products which you want to show on home page{" "}
           </Heading>
-          {filteredindData.map((item) => (
+          <Label>
+            <Text>Search by ID or Name</Text>
+            <Input
+              placeholder="Enter ID or Name"
+              onChange={(e) => {
+                const value = e.target.value;
+                console.log(value);
+                if(value){
+                  const lowerCaseValue = value.toLowerCase();
+                const filteredProducts = product.filter(
+                  (item) =>
+                    item.id.includes(value) || item.title.toLowerCase().includes(lowerCaseValue)
+                );
+                console.log(filteredProducts);
+                setProduct(filteredProducts);
+              }else { 
+                fetchFeaturedSections().then((data) => {
+                  if (data) {
+                    console.log(data);
+                    setProduct(data);
+                  }
+                }
+                )}
+
+              }
+              }
+
+            />
+          </Label>
+
+          {product ? (product.map((item) => (
             <Container key={item.id} className="mt-2">
               <Switch
                 id="manage-inventory"
@@ -355,7 +359,7 @@ const HighlightSectionForm = ({
                 </Text>
               </Label>
             </Container>
-          ))}
+          ))): "No data found"}
         </Drawer.Body>
         <Drawer.Footer>
           <Drawer.Close asChild>
@@ -369,24 +373,11 @@ const HighlightSectionForm = ({
 };
 
 const CustomPage = () => {
-  const [featuredSections, setfeaturedSections] = useState<
-    PostAdminCreateFeaturedsectionPayload[]
-  >([]);
-  const [filteredindData, setfilteredData] = useState<
-    PostAdminCreateFilterdataPayload[]
-  >([]);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [updateId, setUpdateId] = useState<string | null>(null);
-  const [data, setData] = useState<PostAdminCreatedataPayload[]>([]);
-
-  useEffect(() => {
-    fetchFeaturedSections().then((data) => {
-      if (data) {
-        console.log(data);
-        setfeaturedSections(data);
-      }
-    });
-  }, []);
+  const [data, setData] = useState<Managedatawithproductdataandshowonhome[]>(
+    []
+  );
 
   const deleteFeaturedSection = async (id: string) => {
     try {
@@ -397,7 +388,7 @@ const CustomPage = () => {
         throw new Error("Failed to delete hero section");
       }
       console.log("Featured section deleted successfully");
-      window.location.reload();
+
       fetchdata().then((data) => {
         if (data) {
           console.log(data);
@@ -405,9 +396,6 @@ const CustomPage = () => {
         }
       });
       const updatedHeroSections = await fetchFeaturedSections();
-      if (updatedHeroSections) {
-        setfeaturedSections(updatedHeroSections);
-      }
     } catch (error: any) {
       console.error("Error deleting hero section:", error.message || error);
     }
@@ -422,39 +410,16 @@ const CustomPage = () => {
     });
   }, []);
 
-  const filteredData = () =>
-    featuredSections
-      .filter((section) => data.some((item) => item.product_id === section.id))
-      .map((section) => ({
-        ...section,
-        handler_id:
-          data.find((item) => item.product_id === section.id)?.id || "",
-      }));
-
-  useEffect(() => {
-    const data = filteredData();
-    if (data) {
-      console.log(data, "that isdata");
-      setfilteredData(data);
-    }
-  }, [data]);
-
-  
-
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
+    <div className="divide-y p-0">
+      <Container className="flex items-center justify-between px-6 py-4">
         <Heading level="h2">Add / Delete product on homepage</Heading>
-       <div className="flex gap-4">
-        <Addredirect />
-        <HighlightSectionForm
-          setfeaturedSections={setfeaturedSections}
-          featuredSections={featuredSections}
-          filteredindsData={filteredindData}
-        />
-       </div>
-      </div>
-      {filteredindData.map((item, index) => {
+        <div className="flex gap-4">
+          <Addredirect />
+          <HighlightSectionForm data={data} setData={setData} />
+        </div>
+      </Container>
+      {data.map((item, index) => {
         return (
           <Container key={item.id} className="mt-2">
             <Heading level="h3" className="text-2xl  mb-4">
@@ -496,14 +461,19 @@ const CustomPage = () => {
               <Text className="">
                 <strong>Weight:</strong> {item.weight}g
               </Text>
-              <Button onClick={() => deleteFeaturedSection(item.handler_id)}>
+              <Button
+                onClick={() =>
+                  item.show_on_home_id &&
+                  deleteFeaturedSection(item.show_on_home_id)
+                }
+              >
                 remove
               </Button>
             </Label>
           </Container>
         );
       })}
-    </Container>
+    </div>
   );
 };
 
