@@ -507,9 +507,4 @@ const CustomPage = () => {
   );
 };
 
-// export const config = defineRouteConfig({
-//   label: "Items",
-//   icon: Pencil,
-// });
-
 export default CustomPage;

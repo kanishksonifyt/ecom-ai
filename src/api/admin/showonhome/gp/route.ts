@@ -14,5 +14,14 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     },
   });
 
-  res.json({ showonhome: product });
+  const productWithResultId = product.data.map((prod) => {
+    const resultItem = result.find((item) => item.product_id === prod.id);
+    return {
+      ...prod,
+      show_on_home_id: resultItem ? resultItem.id : null,
+    };
+  });
+
+  res.json({ showonhome: productWithResultId });
+
 };
