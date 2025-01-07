@@ -1,6 +1,6 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
   projectConfig: {
@@ -12,9 +12,26 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
       // imageuploaderCors: "http://localhost:7001",
-    }
+    },
   },
   modules: [
+    // {
+    //   resolve: "@medusajs/medusa/payment",
+    //   options: {
+    //     providers: [
+    //       {
+    //         resolve: "medusa-payment-manual",
+    //         // id: "stripe",
+    //         options: {
+    //           // ...
+    //         },
+    //       },
+    //     ],
+    //   },
+    // },
+
+
+
     {
       resolve: "./src/modules/hero",
     },
@@ -39,8 +56,5 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/homepage",
     },
-    
-
   ],
-
-})
+});
