@@ -15,18 +15,18 @@ module.exports = defineConfig({
     },
   },
   modules: [
-     {
-      resolve: "@medusajs/medusa/payment",
-      options: {
-        providers: [
-          {
-            resolve: "./src/modules/razorpay-payment",
-            id: "razorpay",
-            options: {},
-          },
-        ],
-      },
-    },
+    //  {
+    //   resolve: "@medusajs/medusa/payment",
+    //   options: {
+    //     providers: [
+    //       {
+    //         resolve: "./src/modules/razorpay-payment",
+    //         id: "razorpay",
+    //         options: {},
+    //       },
+    //     ],
+    //   },
+    // },
     {
       resolve: "./src/modules/cms",
       options: {
