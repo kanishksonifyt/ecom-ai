@@ -120,7 +120,7 @@ export const getAllShowonHomeStep = createStep(
 
     const showonhome = await ShowonhomeModuleService.listShow_on_homepages({});
 
-    return new StepResponse(showonhome, showonhome.id);
+    return new StepResponse(showonhome, showonhome[0]?.id);
   }
 );
 

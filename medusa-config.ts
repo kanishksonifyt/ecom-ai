@@ -30,7 +30,12 @@ module.exports = defineConfig({
     //   },
     // },
 
-
+    {
+      resolve: "./src/modules/cms",
+      options: {
+        apiKey: process.env.CMS_API_KEY,
+      },
+    },
 
     {
       resolve: "./src/modules/hero",
