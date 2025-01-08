@@ -1,5 +1,5 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
-
+import { Modules } from "@medusajs/framework/utils";
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
@@ -15,21 +15,18 @@ module.exports = defineConfig({
     },
   },
   modules: [
-    // {
-    //   resolve: "@medusajs/medusa/payment",
-    //   options: {
-    //     providers: [
-    //       {
-    //         resolve: "medusa-payment-manual",
-    //         // id: "stripe",
-    //         options: {
-    //           // ...
-    //         },
-    //       },
-    //     ],
-    //   },
-    // },
-
+     {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/razorpay-payment",
+            id: "razorpay",
+            options: {},
+          },
+        ],
+      },
+    },
     {
       resolve: "./src/modules/cms",
       options: {
