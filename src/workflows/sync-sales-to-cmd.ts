@@ -94,7 +94,7 @@ const syncOrderToCmsStep = createStep(
   async (order: Order, { container }) => {
     const cmsModuleService: CmsModuleService = container.resolve(CMS_MODULE);
 
-    console.log("input", order.shipping_methods);
+    // console.log("input", order.shipping_methods);
 
     const input = order;
     // Construct the payload to include all order data

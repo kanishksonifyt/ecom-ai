@@ -1,5 +1,4 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
-import { Modules } from "@medusajs/framework/utils";
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
@@ -35,34 +34,36 @@ module.exports = defineConfig({
     //     apiKey: process.env.CMS_API_KEY,
     //   },
     // },
-    {      resolve: "@medusajs/medusa/payment",
+    {
+      resolve: "@medusajs/medusa/payment",
       options: {
         providers: [
-          
           {
             resolve: "@sgftech/payment-razorpay",
             id: "pp_rozarpay_razorpay",
             options: {
               key_id:
-                  process?.env?.RAZORPAY_TEST_KEY_ID ??
-                  process?.env?.RAZORPAY_ID,
+                process?.env?.RAZORPAY_TEST_KEY_ID ?? process?.env?.RAZORPAY_ID,
               key_secret:
-                  process?.env?.RAZORPAY_TEST_KEY_SECRET ??
-                  process?.env?.RAZORPAY_SECRET,
+                process?.env?.RAZORPAY_TEST_KEY_SECRET ??
+                process?.env?.RAZORPAY_SECRET,
               razorpay_account:
-                  process?.env?.RAZORPAY_TEST_ACCOUNT ??
-                  process?.env?.RAZORPAY_ACCOUNT,
+                process?.env?.RAZORPAY_TEST_ACCOUNT ??
+                process?.env?.RAZORPAY_ACCOUNT,
               automatic_expiry_period: 30 /* any value between 12minuts and 30 days expressed in minutes*/,
               manual_expiry_period: 20,
               refund_speed: "normal",
               webhook_secret:
-                  process?.env?.RAZORPAY_TEST_WEBHOOK_SECRET ??
-                  process?.env?.RAZORPAY_WEBHOOK_SECRET
-          }
+                process?.env?.RAZORPAY_TEST_WEBHOOK_SECRET ??
+                process?.env?.RAZORPAY_WEBHOOK_SECRET,
+            },
           },
-          
         ],
-     } },
+      },
+    },
+    {
+      resolve: "./src/modules/point",
+    },
 
     {
       resolve: "./src/modules/hero",

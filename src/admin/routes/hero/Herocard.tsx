@@ -183,7 +183,7 @@ const HeroSectionForm = ({
         )
       );
 
-      console.log("Hero section updated successfully:", data);
+      // console.log("Hero section updated successfully:", data);
 
       return data;
     } catch (error: any) {
@@ -442,7 +442,7 @@ const HeroSectionForm = ({
               <Button
                 onClick={() => {
                   if (!isCurrentTabCompleted) {
-                    console.log(title);
+                    // console.log(title);
                     submitvalidation();
                     return;
                   }
@@ -478,7 +478,7 @@ const Herocard = ({
   id: string;
   title: string;
   subtitle: string;
-  isDrawer : boolean;
+  isDrawer: boolean;
   secoundbuttonroute: string;
   firstbuttonroute: string;
   firsttext: string;
@@ -511,7 +511,7 @@ const Herocard = ({
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    console.log("key", sectionIndex);
+    // console.log("key", sectionIndex);
   }, [sectionIndex]);
   const updateHeroSection = async (id: string, payload: Partial<any>) => {
     try {
@@ -535,7 +535,7 @@ const Herocard = ({
         )
       );
 
-      console.log("Hero section updated successfully:", data);
+      // console.log("Hero section updated successfully:", data);
 
       return data;
     } catch (error: any) {

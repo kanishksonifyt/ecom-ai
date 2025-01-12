@@ -30,8 +30,8 @@ const fetchHighlightSections = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Hero sections fetched successfully:", data);
-    console.log("Hero sections fetched successfully:", data.highlights);
+    // console.log("Hero sections fetched successfully:", data);
+    // console.log("Hero sections fetched successfully:", data.highlights);
     return data.highlights;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -48,7 +48,7 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
   sethighlightSections,
 }) => {
   const [image, setImage] = useState("");
-  
+
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +87,7 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
     setError(null);
   };
 
-  const uploadImage = async ( file : File) => {
+  const uploadImage = async (file: File) => {
     if (file) {
       try {
         setLoading(true);
@@ -142,14 +142,13 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
       }
 
       const data = await response.json();
-      console.log("Highlight section created successfully:", data);
+      // console.log("Highlight section created successfully:", data);
 
       fetchHighlightSections().then((data) => {
         if (data) {
           sethighlightSections(data);
         }
-      }
-      );
+      });
       resetForm();
       setIsModalOpen(false);
     } catch (err: any) {
@@ -176,18 +175,48 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
             <FocusModal.Body className="flex flex-col items-center py-16">
               <div className="flex w-full max-w-lg flex-col gap-y-8">
                 {error && <div className="text-red-500">{error}</div>}
-                <input type="file" id="image" className="hidden" onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    uploadImage(file);
-                  }
-                }} />
+                <input
+                  type="file"
+                  id="image"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      uploadImage(file);
+                    }
+                  }}
+                />
                 <Container className="flex flex-col gap-y-2 h-[200px] p-0 overflow-hidden justify-center items-center">
-                 
                   {image ? (
-                   loading ? "uploading..." : <Button type="button" variant="secondary" onClick={() => document.getElementById('image')?.click()} className="text-gray-500 w-full h-full p-0"><img src={image} alt="highlight" className="w-full h-full object-cover" /></Button>   
+                    loading ? (
+                      "uploading..."
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() =>
+                          document.getElementById("image")?.click()
+                        }
+                        className="text-gray-500 w-full h-full p-0"
+                      >
+                        <img
+                          src={image}
+                          alt="highlight"
+                          className="w-full h-full object-cover"
+                        />
+                      </Button>
+                    )
+                  ) : loading ? (
+                    "uploading..."
                   ) : (
-                    loading ? "uploading..." : <Button type="button" variant="secondary" onClick={() => document.getElementById('image')?.click()} className="text-gray-500 w-full h-full">Click to upload image</Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => document.getElementById("image")?.click()}
+                      className="text-gray-500 w-full h-full"
+                    >
+                      Click to upload image
+                    </Button>
                   )}
                 </Container>
                 <div className="flex flex-col gap-y-2">
@@ -208,7 +237,7 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
                     <Drawer>
                       <Drawer.Trigger>
                         <Button type="button" className="w-full">
-                        Select product
+                          Select product
                         </Button>
                       </Drawer.Trigger>
                       <Drawer.Content>
@@ -221,8 +250,9 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
                             placeholder="Search by ID"
                             onChange={(e) => {
                               const searchValue = e.target.value.toLowerCase();
-                              const filteredData = filteredIndData.filter((item) =>
-                                item.id.toLowerCase().includes(searchValue)
+                              const filteredData = filteredIndData.filter(
+                                (item) =>
+                                  item.id.toLowerCase().includes(searchValue)
                               );
                               setFilteredIndData(filteredData);
                             }}
@@ -236,7 +266,6 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
                             >
                               <Heading level="h3" className="text-2xl mb-4">
                                 {item.title}
-                                
                               </Heading>
                               <Label
                                 htmlFor={`product-${item.id}`}
@@ -348,7 +377,7 @@ const Addredirect = () => {
       setIndex(data.home.result.index);
       setRedirect(data.home.result.redirect);
       setText(data.home.result.text);
-      console.log("Route data fetched successfully:", data.home.result);
+      // console.log("Route data fetched successfully:", data.home.result);
     } catch (error) {
       console.error("Error fetching route data:", error);
     }
@@ -371,7 +400,7 @@ const Addredirect = () => {
         throw new Error("Failed to save route");
       }
       setIsDrawerOpen(false);
-      console.log(`"Route updated"  successfully`);
+      // console.log(`"Route updated"  successfully`);
     } catch (error) {
       console.error(`Error updating  route:`, error);
     }
@@ -434,7 +463,7 @@ const CustomPage = () => {
   useEffect(() => {
     fetchHighlightSections().then((data) => {
       if (data) {
-        console.log(data);
+        // console.log(data);
         sethighlightSections(data);
       }
     });
@@ -450,7 +479,7 @@ const CustomPage = () => {
           if (!response.ok) {
             throw new Error("Failed to delete hero section");
           }
-          console.log("Hero section deleted successfully");
+          // console.log("Hero section deleted successfully");
           const updatedHeroSections = await fetchHighlightSections();
           if (updatedHeroSections) {
             sethighlightSections(updatedHeroSections);

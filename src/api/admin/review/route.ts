@@ -7,7 +7,7 @@ import {
 import { z } from "zod";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
-import {REVIEW_MODULE} from "../../../modules/review";
+import { REVIEW_MODULE } from "../../../modules/review";
 import { PostAdminCreateReview, PatchAdminEditReview } from "./validators";
 
 // import {  } from "@medusajs/framework/utils";
@@ -26,9 +26,7 @@ export const POST = async (
     ContainerRegistrationKeys.REMOTE_LINK
   );
 
-  
-
-  console.log(req.body);
+  // console.log(req.body);
   const { result } = await createReviewWorkflow(req.scope).run({
     input: {
       ...req.body,
@@ -37,14 +35,14 @@ export const POST = async (
     },
   });
 
-  console.log("result", result.id);
+  // console.log("result", result.id);
 
-  if(req.body.product_id){
+  if (req.body.product_id) {
     await remoteLink.create({
       [Modules.PRODUCT]: {
         product_id: req.body.product_id,
       },
-      [REVIEW_MODULE] : {
+      [REVIEW_MODULE]: {
         review_id: result.id,
       },
     });

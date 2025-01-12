@@ -18,9 +18,9 @@ export const PATCH = async (
     return res.status(400).json({ message: "Hero id is required" });
   }
   const { body } = req;
-  console.log("route hit", id);
+  // console.log("route hit", id);
 
-  console.log("body", body);
+  // console.log("body", body);
 
   // Validate the request body
   const parsedBody = PatchAdminEditHero.parse(body);

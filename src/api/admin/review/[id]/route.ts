@@ -60,8 +60,8 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
 
   try {
     try {
-      if(product_id){
-        console.log("product_id", product_id[0].product.id);
+      if (product_id) {
+        // console.log("product_id", product_id[0].product.id);
       }
     } catch (error) {
       console.error("Error fetching product data:", error);
@@ -70,8 +70,8 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
         .json({ message: "An error occurred while processing your request." });
     }
 
-    console.log("id", id);
-    if(product_id){
+    // console.log("id", id);
+    if (product_id) {
       await remoteLink.dismiss({
         [Modules.PRODUCT]: {
           product_id: product_id[0].product.id,
@@ -98,7 +98,7 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { id } = req.params;
 
-  console.log("id", id);
+  // console.log("id", id);
   // Check if the review ID is provided
   if (!id) {
     return res.status(400).json({ message: "Review id is required" });

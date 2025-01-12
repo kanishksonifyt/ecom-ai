@@ -8,7 +8,7 @@ import { REVIEW_MODULE } from "../modules/review";
 import ReviewModuleService from "../modules/review/service";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
-import { Modules } from "@medusajs/framework/utils"
+import { Modules } from "@medusajs/framework/utils";
 
 // Create Review
 export type CreateReviewStepInput = {
@@ -18,7 +18,7 @@ export type CreateReviewStepInput = {
   user_name: string;
   user_pic?: string;
   date: Date;
-    product_id?: string;
+  product_id?: string;
 };
 
 export const createReviewStep = createStep(
@@ -26,7 +26,7 @@ export const createReviewStep = createStep(
   async (input: CreateReviewStepInput, { container }) => {
     const reviewService: ReviewModuleService = container.resolve(REVIEW_MODULE);
 
-    console.log("input", input);
+    // console.log("input", input);
     const review = await reviewService.createReviews(input);
 
     return new StepResponse(review, review.id);
@@ -37,8 +37,6 @@ export const createReviewWorkflow = createWorkflow(
   "create-review",
   (input: CreateReviewStepInput) => {
     const review = createReviewStep(input);
-
-   
 
     return new WorkflowResponse(review);
   }
@@ -52,11 +50,11 @@ export type GetReviewByIdStepInput = {
 export const getReviewByIdStep = createStep(
   "get-review-by-id-step",
   async (input: GetReviewByIdStepInput, { container }) => {
-    console.log("review", input.id);
+    // console.log("review", input.id);
     const reviewService: ReviewModuleService = container.resolve(REVIEW_MODULE);
 
     const review = await reviewService.retrieveReview(input.id);
-    console.log("review", review);
+    // console.log("review", review);
 
     return new StepResponse(review, review.id);
   }
@@ -66,7 +64,6 @@ export const getReviewByIdWorkflow = createWorkflow(
   "get-review-by-id",
   (input: GetReviewByIdStepInput) => {
     const review = getReviewByIdStep(input);
-    
 
     return new WorkflowResponse(review);
   }
@@ -106,7 +103,7 @@ export type EditReviewStepInput = {
   user_name?: string;
   user_pic?: string;
   date?: Date;
-    product_id?: string;
+  product_id?: string;
 };
 
 export const editReviewStep = createStep(
@@ -157,4 +154,3 @@ export const getAllReviewsWorkflow = createWorkflow("get-all-reviews", () => {
 
   return new WorkflowResponse(reviews);
 });
-

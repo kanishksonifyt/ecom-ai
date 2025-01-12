@@ -1,8 +1,8 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import {
-    getFeaturedByIdWorkflow,
-    deleteFeaturedWorkflow,
-    editFeaturedWorkflow
+  getFeaturedByIdWorkflow,
+  deleteFeaturedWorkflow,
+  editFeaturedWorkflow,
 } from "../../../../workflows/create-featured";
 
 import { z } from "zod";
@@ -19,7 +19,7 @@ export const PATCH = async (
     return res.status(400).json({ message: "Catalog id is required" });
   }
   const { body } = req;
-  console.log("route hit", id);
+  // console.log("route hit", id);
 
   // Validate the request body
   const parsedBody = PatchAdminCreateFeatured.parse(body);

@@ -74,7 +74,7 @@ export const updateHighlightStep = createStep(
     const HighlightModuleService: HighlightModuleService =
       container.resolve(HIGHTLIGHT_MODULE);
 
-    console.log(input.id);
+    // console.log(input.id);
 
     const updatedHighlight = await HighlightModuleService.updateHighlights({
       id: input.id,

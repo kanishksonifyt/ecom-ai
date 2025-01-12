@@ -1,11 +1,10 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
-
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { id } = req.params;
 
-  console.log("id", id);
+  // console.log("id", id);
   // Check if the review ID is provided
   if (!id) {
     return res.status(400).json({ message: "Review id is required" });
@@ -14,7 +13,6 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   try {
-
     if (!id) {
       return res.status(400).json({ message: "Review id is required" });
     }
@@ -22,7 +20,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     // Fetch product details
     const { data: review } = await query.graph({
       entity: "review",
-      fields: [`product.*` , `product.review.*`],
+      fields: [`product.*`, `product.review.*`],
       filters: {
         id: id,
       },

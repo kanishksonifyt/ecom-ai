@@ -38,7 +38,6 @@ export const createShowonHomeWorkflow = createWorkflow(
   "create-showonhome",
   (input: CreateShowonHomeWorkflowInput) => {
     const brand = createShowonHomeStep({ ...input, show_on_homepage: true });
-    
 
     return new WorkflowResponse(brand);
   }
@@ -54,7 +53,7 @@ export const deleteShowonHomeStep = createStep(
     const ShowonhomeModuleService: ShowonhomepageModuleService =
       container.resolve(SHOWONHOME_MODULE);
 
-    console.log("input", input);
+    // console.log("input", input);
 
     try {
       await ShowonhomeModuleService.deleteShow_on_homepages(input);
@@ -73,11 +72,10 @@ type DeleteShowonHomeWorkflowInput = {
 export const deleteShowonHomeWorkflow = createWorkflow(
   "delete-showonhome",
   (input: DeleteShowonHomeWorkflowInput) => {
-
     const result = deleteShowonHomeStep(input);
     return new WorkflowResponse(result);
-    }
-  );
+  }
+);
 export type GetShowonHomeStepInput = {
   id: string;
   product_id: string;
@@ -100,13 +98,15 @@ export const getShowonHomeStep = createStep(
 type GetShowonHomeWorkflowInput = {
   id: string;
   product_id: string;
-  
 };
 
 export const getShowonHomeWorkflow = createWorkflow(
   "get-showonhome",
   (input: GetShowonHomeWorkflowInput) => {
-    const showonhome = getShowonHomeStep({ id: input.id, product_id: input.product_id });
+    const showonhome = getShowonHomeStep({
+      id: input.id,
+      product_id: input.product_id,
+    });
 
     return new WorkflowResponse(showonhome);
   }

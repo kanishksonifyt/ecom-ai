@@ -33,7 +33,7 @@ const fetchHeroSections = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Hero sections fetched successfully:", data.heroes);
+    // console.log("Hero sections fetched successfully:", data.heroes);
     return data.heroes;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -96,9 +96,9 @@ const HeroSectionForm = ({
     }
 
     setIsCurrentTabCompleted(status[activeTab] === "completed");
-    console.log("isCurrentTabCompleted", isCurrentTabCompleted);
-    // console.log("isLastTab", isLastTab);
-    // console.log("activeTab", activeTab);
+    // console.log("isCurrentTabCompleted", isCurrentTabCompleted);
+    // // console.log("isLastTab", isLastTab);
+    // // console.log("activeTab", activeTab);
     isLastTab = activeTab === tabs[tabs.length - 1];
   }, [title, subtitle, firstText, secondText]);
 
@@ -269,7 +269,7 @@ const HeroSectionForm = ({
     uploadImage();
   }, [image]);
 
-  console.log("status", isCurrentTabCompleted);
+  // console.log("status", isCurrentTabCompleted);
   return (
     <form id="heroForm" onSubmit={handleSubmit}>
       <FocusModal open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -376,7 +376,7 @@ const HeroSectionForm = ({
                       const file = e.target.files?.[0];
                       if (file) {
                         setImage(file); // Update the state with the file name or handle the file
-                        console.log("Selected file:", file);
+                        // console.log("Selected file:", file);
                       }
                     }}
                   />

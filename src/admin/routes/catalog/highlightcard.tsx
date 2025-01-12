@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Button,
-  Drawer,
-  Heading,
-  Input,
-  Label,
-} from "@medusajs/ui";
+import { Container, Button, Drawer, Heading, Input, Label } from "@medusajs/ui";
 import { XMarkMini, Spinner } from "@medusajs/icons";
 import axios from "axios";
 
@@ -53,7 +46,7 @@ const HighlightCard = ({
         )
       );
 
-      console.log("Catalog section updated successfully:", updatedSection);
+      // console.log("Catalog section updated successfully:", updatedSection);
       return updatedSection;
     } catch (error) {
       console.error("Error updating catalog section:", error);
@@ -84,13 +77,13 @@ const HighlightCard = ({
             Authorization:
               "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
           },
-        })
+        }
+      );
 
       if (!response.data) {
         throw new Error("Failed to upload image");
       }
 
-      
       setEditImage(response.data); // Assume the API returns the uploaded image URL
     } catch (error) {
       console.error("Image upload failed:", error);
@@ -102,7 +95,11 @@ const HighlightCard = ({
   return (
     <div className="flex flex-col max-w-[300px] w-[30%] gap-2 h-[350px]">
       <Container className="divide-y p-0 h-[90%] max-h-[300px] flex flex-col justify-center relative overflow-hidden">
-        <img src={image} alt="Catalog" className="w-full h-[80%] object-cover" />
+        <img
+          src={image}
+          alt="Catalog"
+          className="w-full h-[80%] object-cover"
+        />
         <Container className="flex items-center justify-between px-6 py-4">
           <Heading level="h1">{link}</Heading>
         </Container>
@@ -159,18 +156,24 @@ const HighlightCard = ({
                     disabled={uploading}
                     className="w-full p-0 h-[200px]"
                   >
-                    {!uploading ?  <img
-                      src={editImage}
-                      alt="Preview"
-                      className="w-full h-full object-cover "
-                    /> : <Button
-                  variant="secondary"
-                  className="w-full h-[200px] object-cover mt-2"
-                  onClick={() => document.getElementById("image")?.click()}
-                  disabled={uploading}
-                >
-                  {uploading ? "Uploading..." : "Upload Image"}
-                </Button> }
+                    {!uploading ? (
+                      <img
+                        src={editImage}
+                        alt="Preview"
+                        className="w-full h-full object-cover "
+                      />
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        className="w-full h-[200px] object-cover mt-2"
+                        onClick={() =>
+                          document.getElementById("image")?.click()
+                        }
+                        disabled={uploading}
+                      >
+                        {uploading ? "Uploading..." : "Upload Image"}
+                      </Button>
+                    )}
                   </Button>
                   {/* {!loading ? (
                     <img

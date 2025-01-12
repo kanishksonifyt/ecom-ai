@@ -53,8 +53,10 @@ const Card = ({
 
         axios
           .patch(`/admin/home/${id}`, { newIndex: newIndex + 1 })
-          .then(() => console.log("Index updated successfully"))
-          .catch((error) => console.error("Error updating index:", error));
+          .then(() => {
+            // console.log("Index updated successfully")
+          })
+          .catch((error : any) => console.error("Error updating index:", error));
 
         return updatedSections;
       }

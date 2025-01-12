@@ -40,10 +40,9 @@ const Highlightcard = ({
   const [error, setError] = useState<string | null>(null);
   const [filteredIndData, setFilteredIndData] = useState(filterData);
 
-  useEffect(()=>{
-    setFilteredIndData(filterData)
-  },[filterData])
-
+  useEffect(() => {
+    setFilteredIndData(filterData);
+  }, [filterData]);
 
   const updatehighlightSection = async (id: string, payload: Partial<any>) => {
     try {
@@ -69,7 +68,7 @@ const Highlightcard = ({
         )
       );
 
-      console.log("Highlight section updated successfully:", data);
+      // console.log("Highlight section updated successfully:", data);
       return data;
     } catch (error: any) {
       console.error(
@@ -79,7 +78,7 @@ const Highlightcard = ({
     }
   };
 
-  const uploadImage = async ( file : File) => {
+  const uploadImage = async (file: File) => {
     if (file) {
       try {
         setLoading(true);
@@ -119,8 +118,6 @@ const Highlightcard = ({
     }
   };
 
-  
-
   return (
     <div className="flex max-w-[300px] min-w-[250px] gap-2 h-[350px] flex-col">
       <Container className="divide-y p-0 h-[90%] max-h-[300px] flex flex-col item-center justify-center w-full relative overflow-hidden">
@@ -130,12 +127,11 @@ const Highlightcard = ({
           className="w-full h-[85%] object-cover"
         />
 
-<Container className="flex items-center justify-between px-6 py-4 h-[50px] overflow-x-auto max-w-full overflow-y-hidden">
-  <Heading level="h1" className="whitespace-nowrap">
-   {link}
-  </Heading>
-</Container>
-
+        <Container className="flex items-center justify-between px-6 py-4 h-[50px] overflow-x-auto max-w-full overflow-y-hidden">
+          <Heading level="h1" className="whitespace-nowrap">
+            {link}
+          </Heading>
+        </Container>
       </Container>
       <Container className="flex items-center w-full justify-between h-[15%]">
         <Button
@@ -183,7 +179,9 @@ const Highlightcard = ({
                               <Button
                                 type="button"
                                 variant="secondary"
-                                onClick={() => document.getElementById("image")?.click()}
+                                onClick={() =>
+                                  document.getElementById("image")?.click()
+                                }
                                 className="text-gray-500 w-full h-full p-0"
                               >
                                 <img
@@ -201,7 +199,9 @@ const Highlightcard = ({
                             <Button
                               type="button"
                               variant="secondary"
-                              onClick={() => document.getElementById("image")?.click()}
+                              onClick={() =>
+                                document.getElementById("image")?.click()
+                              }
                               className="text-gray-500 w-full h-full"
                             >
                               Click to upload image
@@ -243,7 +243,7 @@ const Highlightcard = ({
                                   const searchValue =
                                     e.target.value.toLowerCase();
                                   const filteredData = filteredIndData.filter(
-                                    (item :any) =>
+                                    (item: any) =>
                                       item.id
                                         .toLowerCase()
                                         .includes(searchValue)
@@ -252,7 +252,7 @@ const Highlightcard = ({
                                 }}
                                 className="mb-4"
                               />
-                              {filteredIndData.map((item:any) => (
+                              {filteredIndData.map((item: any) => (
                                 <Container
                                   key={item.id}
                                   onClick={() => setEditProductId(item.id)}
@@ -307,8 +307,8 @@ const Highlightcard = ({
                           Remove Product
                         </Button>
                         {filteredIndData
-                          .filter((item :any) => item.id === editProductId)
-                          .map((item :any) => (
+                          .filter((item: any) => item.id === editProductId)
+                          .map((item: any) => (
                             <Container key={item.id} className="">
                               <Heading level="h3" className="text-2xl mb-4">
                                 {item.title}

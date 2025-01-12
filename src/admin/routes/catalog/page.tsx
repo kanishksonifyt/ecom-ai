@@ -17,7 +17,7 @@ const fetchCatalogSections = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Catalog sections fetched successfully:", data);
+    // console.log("Catalog sections fetched successfully:", data);
     return data.catalogs;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -199,7 +199,7 @@ const CustomPage = () => {
   useEffect(() => {
     fetchCatalogSections().then((data) => {
       if (data) {
-        console.log(data);
+        // console.log(data);
         setcatalogSections(data);
       }
     });
@@ -216,7 +216,7 @@ const CustomPage = () => {
           if (!response.ok) {
             throw new Error("Failed to delete hero section");
           }
-          console.log("Catalog section deleted successfully");
+          // console.log("Catalog section deleted successfully");
           const updatedHeroSections = await fetchCatalogSections();
           if (updatedHeroSections) {
             setcatalogSections(updatedHeroSections);

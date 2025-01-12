@@ -20,19 +20,19 @@ export default async function productCreateHandler({
     // const eventBusService: EventBusService = container.resolve("eventBusService");
 
     // Emit an example event (order.created)
-    const result =  emitEventStep({
+    const result = emitEventStep({
       eventName: "order.created",
       data: {
         orderId: data.id, // Replace with actual order ID if needed
-      }
+      },
     });
-    console.log("Event emitted result:", result); // Will log undefined
+    // console.log("Event emitted result:", result); // Will log undefined
 
     // Retrieve the product details using its ID
     const product = await productModuleService.retrieveProduct(productId);
 
     // Log the product details
-    console.log(`The product "${product.title}" was created successfully`);
+    // console.log(`The product "${product.title}" was created successfully`);
   } catch (error) {
     console.error("Error handling the product.created event:", error);
   }

@@ -34,7 +34,7 @@ const fetchReview = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Featured sections fetched successfully:", data);
+    // console.log("Featured sections fetched successfully:", data);
     return data.reviews;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -50,8 +50,8 @@ const deleteReview = async (id: string) => {
     if (!response.ok) {
       throw new Error("Failed to delete review");
     }
-    console.log("Review deleted successfully", response);
-    console.log("Review deleted successfully");
+    // console.log("Review deleted successfully", response);
+    // console.log("Review deleted successfully");
   } catch (error: any) {
     console.error("Error deleting review:", error.message || error);
   }
@@ -120,7 +120,7 @@ function Addreview({
 
       const data = await response.json();
 
-      console.log("Review saved successfully:", data);
+      // console.log("Review saved successfully:", data);
       if (selectedReview) {
         // Update review if it's an edit
         setReview(
@@ -293,7 +293,7 @@ const CustomPage = () => {
     useState<PostAdminCreatereviewPayload | null>(null);
 
   useEffect(() => {
-    console.log("Fetching reviews...");
+    // console.log("Fetching reviews...");
     fetchReview().then((data) => setReview(Array.isArray(data) ? data : []));
   }, []);
 
@@ -372,16 +372,8 @@ const CustomPage = () => {
 };
 
 const product_com = () => {
-
-
-  
-
-
   return (
-    <Container
-      key={item.id}
-      className="mt-2"
-    >
+    <Container key={item.id} className="mt-2">
       <Heading level="h3" className="text-2xl mb-4">
         {item.title}
       </Heading>

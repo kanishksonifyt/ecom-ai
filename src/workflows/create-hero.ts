@@ -138,11 +138,11 @@ export const editHeroStep = createStep(
   async (input: EditHeroStepInput, { container }) => {
     const HeroModuleService: HeroModuleService = container.resolve(HERO_MODULE);
 
-    console.log(input);
+    // console.log(input);
 
     const herofound = await HeroModuleService.retrieveHero(input.id);
 
-    console.log("heroof ound", herofound);
+    // console.log("heroof ound", herofound);
 
     const updatedHero = await HeroModuleService.updateHeroes({
       id: input.id,
@@ -231,7 +231,7 @@ export const reorderHeroesStep = createStep(
     // Remove the hero from its current position
     const filteredHeroes = heroes.filter((h) => h.id !== input.id);
 
-    console.log("filteredHeroes", filteredHeroes);
+    // console.log("filteredHeroes", filteredHeroes);
 
     // Insert the hero at the new index
     filteredHeroes.splice(input.newIndex - 1, 0, hero);

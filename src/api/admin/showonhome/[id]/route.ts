@@ -9,9 +9,6 @@ import { z } from "zod";
 import { PostAdminCreateShowonhome } from "./validators";
 import { ITEM_MODULE } from "../../../../modules/item";
 
-
-
-
 type PostAdminCreateShowonhomeType = {
   product_id: string;
 };
@@ -28,7 +25,7 @@ export const POST = async (
     ContainerRegistrationKeys.REMOTE_LINK
   );
 
-  console.log("route hit", product_id);
+  // console.log("route hit", product_id);
   const { result } = await createShowonHomeWorkflow(req.scope).run({
     input: { product_id, show_on_homepage: true },
   });
@@ -50,7 +47,7 @@ export const POST = async (
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const { id } = req.params;
-    console.log("route hit", id);
+    // console.log("route hit", id);
     await deleteShowonHomeWorkflow(req.scope).run({ input: { id } });
 
     res.status(204).send({

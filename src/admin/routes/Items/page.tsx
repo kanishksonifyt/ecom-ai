@@ -47,8 +47,8 @@ const fetchFeaturedSections = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Featured sections fetched successfully:", data);
-    console.log("Featured sections fetched successfully:", data);
+    // console.log("Featured sections fetched successfully:", data);
+    // console.log("Featured sections fetched successfully:", data);
     return data.showonhome;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -68,8 +68,8 @@ const fetchdata = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("data fetched successfully:", data);
-    console.log("data fetched successfully:", data);
+    // console.log("data fetched successfully:", data);
+    // console.log("data fetched successfully:", data);
     return data.showonhome;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -98,7 +98,7 @@ const Addredirect = () => {
       setRedirect(data.home.result.redirect);
 
       setText(data.home.result.text);
-      console.log("Route data fetched successfully:", data.home.result);
+      // console.log("Route data fetched successfully:", data.home.result);
     } catch (error) {
       console.error("Error fetching route data:", error);
     }
@@ -122,7 +122,7 @@ const Addredirect = () => {
         throw new Error("Failed to save route");
       }
       setIsDrawerOpen(false);
-      console.log(`"Route updated"  successfully`);
+      // console.log(`"Route updated"  successfully`);
     } catch (error) {
       console.error(`Error updating  route:`, error);
     }
@@ -185,7 +185,7 @@ const HighlightSectionForm = ({
   useEffect(() => {
     fetchFeaturedSections().then((data) => {
       if (data) {
-        console.log(data);
+        // console.log(data);
         setProduct(data);
       }
     });
@@ -203,19 +203,19 @@ const HighlightSectionForm = ({
       if (!response.ok) {
         throw new Error("Failed to add product on homepage");
       }
-      console.log("Product added on homepage successfully");
+      // console.log("Product added on homepage successfully");
       const updatedHeroSections = await fetchFeaturedSections();
       if (updatedHeroSections) {
         fetchFeaturedSections().then((data) => {
           if (data) {
-            console.log(data);
+            // console.log(data);
             setProduct(data);
           }
         });
 
         fetchdata().then((data) => {
           if (data) {
-            console.log(data);
+            // console.log(data);
             setData(data);
           }
         });
@@ -239,18 +239,17 @@ const HighlightSectionForm = ({
       if (!response.ok) {
         throw new Error("Failed to remove product from homepage");
       }
-      console.log("Product removed from homepage successfully");
+      // console.log("Product removed from homepage successfully");
       const updatedHeroSections = await fetchFeaturedSections();
       if (updatedHeroSections) {
         setProduct(updatedHeroSections);
       }
-      fetchdata().then((data) => {  
+      fetchdata().then((data) => {
         if (data) {
-          console.log(data);
+          // console.log(data);
           setData(data);
         }
-      }
-      );
+      });
     } catch (error: any) {
       console.error(
         "Error removing product from homepage:",
@@ -280,86 +279,86 @@ const HighlightSectionForm = ({
               placeholder="Enter ID or Name"
               onChange={(e) => {
                 const value = e.target.value;
-                console.log(value);
-                if(value){
+                // console.log(value);
+                if (value) {
                   const lowerCaseValue = value.toLowerCase();
-                const filteredProducts = product.filter(
-                  (item) =>
-                    item.id.includes(value) || item.title.toLowerCase().includes(lowerCaseValue)
-                );
-                console.log(filteredProducts);
-                setProduct(filteredProducts);
-              }else { 
-                fetchFeaturedSections().then((data) => {
-                  if (data) {
-                    console.log(data);
-                    setProduct(data);
-                  }
+                  const filteredProducts = product.filter(
+                    (item) =>
+                      item.id.includes(value) ||
+                      item.title.toLowerCase().includes(lowerCaseValue)
+                  );
+                  // console.log(filteredProducts);
+                  setProduct(filteredProducts);
+                } else {
+                  fetchFeaturedSections().then((data) => {
+                    if (data) {
+                      // console.log(data);
+                      setProduct(data);
+                    }
+                  });
                 }
-                )}
-
-              }
-              }
-
+              }}
             />
           </Label>
 
-          {product ? (product.map((item) => (
-            <Container key={item.id} className="mt-2">
-              <Switch
-                id="manage-inventory"
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    addproductonhomepage(item.id);
-                  } else {
-                    removeProductFromHomepage(item.id);
-                  }
-                }}
-              />
-              <Heading level="h3" className="text-2xl  mb-4">
-                {item.title}
-              </Heading>
-              <Label htmlFor="manage-inventory" className="space-y-2">
-                <Text className="">
-                  <strong>ID:</strong> {item.id}
-                </Text>
-                <Text className="">
-                  <strong>Description:</strong> {item.description}
-                </Text>
-                <div className="flex items-center space-x-4">
-                  <strong className="">Thumbnail:</strong>
-                  {item.thumbnail ? (
-                    <img
-                      src={item.thumbnail}
-                      alt="Thumbnail"
-                      className="w-20 h-20 object-cover rounded-md"
-                    />
-                  ) : (
-                    <span className="text-gray-500">
-                      No Thumbnail Available
-                    </span>
-                  )}
-                </div>
-                <Text className="">
-                  <strong>Status:</strong> {item.status}
-                </Text>
-                <Text className="">
-                  <strong>Discountable:</strong>{" "}
-                  {item.discountable ? "Yes" : "No"}
-                </Text>
-                <Text className="">
-                  <strong>Handle:</strong> {item.handle}
-                </Text>
-                <Text className="">
-                  <strong>Added At:</strong>{" "}
-                  {new Date(item.created_at).toLocaleString()}
-                </Text>
-                <Text className="">
-                  <strong>Weight:</strong> {item.weight}g
-                </Text>
-              </Label>
-            </Container>
-          ))): "No data found"}
+          {product
+            ? product.map((item) => (
+                <Container key={item.id} className="mt-2">
+                  <Switch
+                    id="manage-inventory"
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        addproductonhomepage(item.id);
+                      } else {
+                        removeProductFromHomepage(item.id);
+                      }
+                    }}
+                  />
+                  <Heading level="h3" className="text-2xl  mb-4">
+                    {item.title}
+                  </Heading>
+                  <Label htmlFor="manage-inventory" className="space-y-2">
+                    <Text className="">
+                      <strong>ID:</strong> {item.id}
+                    </Text>
+                    <Text className="">
+                      <strong>Description:</strong> {item.description}
+                    </Text>
+                    <div className="flex items-center space-x-4">
+                      <strong className="">Thumbnail:</strong>
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt="Thumbnail"
+                          className="w-20 h-20 object-cover rounded-md"
+                        />
+                      ) : (
+                        <span className="text-gray-500">
+                          No Thumbnail Available
+                        </span>
+                      )}
+                    </div>
+                    <Text className="">
+                      <strong>Status:</strong> {item.status}
+                    </Text>
+                    <Text className="">
+                      <strong>Discountable:</strong>{" "}
+                      {item.discountable ? "Yes" : "No"}
+                    </Text>
+                    <Text className="">
+                      <strong>Handle:</strong> {item.handle}
+                    </Text>
+                    <Text className="">
+                      <strong>Added At:</strong>{" "}
+                      {new Date(item.created_at).toLocaleString()}
+                    </Text>
+                    <Text className="">
+                      <strong>Weight:</strong> {item.weight}g
+                    </Text>
+                  </Label>
+                </Container>
+              ))
+            : "No data found"}
         </Drawer.Body>
         <Drawer.Footer>
           <Drawer.Close asChild>
@@ -387,11 +386,11 @@ const CustomPage = () => {
       if (!response.ok) {
         throw new Error("Failed to delete hero section");
       }
-      console.log("Featured section deleted successfully");
+      // console.log("Featured section deleted successfully");
 
       fetchdata().then((data) => {
         if (data) {
-          console.log(data);
+          // console.log(data);
           setData(data);
         }
       });
@@ -404,7 +403,7 @@ const CustomPage = () => {
   useEffect(() => {
     fetchdata().then((data) => {
       if (data) {
-        console.log(data);
+        // console.log(data);
         setData(data);
       }
     });

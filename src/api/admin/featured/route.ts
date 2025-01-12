@@ -16,8 +16,7 @@ export const POST = async (
   req: MedusaRequest<PostAdminCreateFeaturedType>,
   res: MedusaResponse
 ) => {
-
-  console.log("route hit", req.body);
+  // console.log("route hit", req.body);
   const { result } = await createFeaturedWorkflow(req.scope).run({
     input: {
       ...req.body,

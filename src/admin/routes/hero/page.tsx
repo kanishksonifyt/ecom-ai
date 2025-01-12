@@ -44,7 +44,7 @@ const fetchHeroSections = async () => {
       throw new Error("Failed to fetch hero sections");
     }
     const data = await response.json();
-    console.log("Hero sections fetched successfully:", data.heroes);
+    // console.log("Hero sections fetched successfully:", data.heroes);
     return data.heroes;
   } catch (error: any) {
     console.error("Error fetching hero sections:", error.message || error);
@@ -89,7 +89,7 @@ const CustomPage = () => {
     updatedSections.splice(destination.index, 0, movedItem);
 
     setHeroSections(updatedSections);
-    console.log(`Moved from index ${source.index} to ${destination.index}`);
+    // console.log(`Moved from index ${source.index} to ${destination.index}`);
   };
 
   const deleteHeroSection = async (id: string) => {
@@ -98,14 +98,14 @@ const CustomPage = () => {
         method: "DELETE",
       });
 
-      console.log("Delete response:", response);
+      // console.log("Delete response:", response);
       if (response.status !== 204) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to delete hero section");
       }
 
       // const data = await response.json();
-      // console.log("Hero section deleted successfully:", data);
+      // // console.log("Hero section deleted successfully:", data);
       fetchHeroSections().then((data) => {
         if (data) {
           setHeroSections(data);
@@ -120,7 +120,7 @@ const CustomPage = () => {
     }
   };
 
-  console.log(typeof heroSections[0]?.index);
+  // console.log(typeof heroSections[0]?.index);
 
   // useEffect(() => {
   //   const sortedHeroSections = [...heroSections].sort((a, b) => a.index - b.index);
@@ -151,7 +151,7 @@ const CustomPage = () => {
     const { active, over } = event;
     setIsDrawer(false);
 
-    console.log(active, over);
+    // console.log(active, over);
 
     if (over && active.id !== over.id) {
       setHeroSections((prevSections) => {

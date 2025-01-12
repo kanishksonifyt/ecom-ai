@@ -58,7 +58,7 @@ const deleteReview = async (id: string) => {
     if (!response.ok) {
       throw new Error("Failed to delete review");
     }
-    console.log("Review deleted successfully");
+    // console.log("Review deleted successfully");
   } catch (error) {
     console.error("Error deleting review:", error);
   }
@@ -96,7 +96,7 @@ const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
         throw new Error("Failed to save route");
       }
       setIsDrawerOpen(false);
-      console.log(`${isUpdate ? "Route updated" : "Route added"} successfully`);
+      // console.log(`${isUpdate ? "Route updated" : "Route added"} successfully`);
     } catch (error) {
       console.error(`Error ${isUpdate ? "updating" : "adding"} route:`, error);
     }
@@ -178,37 +178,7 @@ const CustomPage = () => {
     setHome((prevRoutes) => prevRoutes.filter((route) => route.id !== id));
   };
 
-  const handleMove = (direction: "up" | "down", id: string) => {
-    setHome((prevSections) => {
-      const currentIndex = prevSections.findIndex(
-        (section) => section.id === id
-      );
-      let newIndex = currentIndex;
 
-      if (direction === "up" && currentIndex > 0) {
-        newIndex -= 1;
-      } else if (
-        direction === "down" &&
-        currentIndex < prevSections.length - 1
-      ) {
-        newIndex += 1;
-      }
-
-      if (newIndex !== currentIndex) {
-        const updatedSections = [...prevSections];
-        const [movedSection] = updatedSections.splice(currentIndex, 1);
-        updatedSections.splice(newIndex, 0, movedSection);
-
-        axios
-          .patch(`/admin/home/${id}`, { newIndex: newIndex + 1 })
-          .then(() => console.log("Index updated successfully"))
-          .catch((error) => console.error("Error updating index:", error));
-
-        return updatedSections;
-      }
-      return prevSections;
-    });
-  };
 
   useEffect(() => {
     fetchHome().then((data) => setHome(Array.isArray(data) ? data : []));
@@ -218,7 +188,7 @@ const CustomPage = () => {
     const { active, over } = event;
     setIsDrawer(false);
 
-    console.log(active, over);
+    // console.log(active, over);
 
     // toast.loading("Updating index", {
     //   description: "Updating index of the section",
@@ -253,7 +223,7 @@ const CustomPage = () => {
     }
   }
 
-  console.log(home);
+  // console.log(home);
 
   return (
     <>
