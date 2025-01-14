@@ -43,6 +43,7 @@ const fetchReview = async () => {
 };
 
 const deleteReview = async (id: string) => {
+  console.log(id ," this is id")
   try {
     const response = await fetch(`/admin/review/${id}`, {
       method: "DELETE",
@@ -50,8 +51,8 @@ const deleteReview = async (id: string) => {
     if (!response.ok) {
       throw new Error("Failed to delete review");
     }
-    // console.log("Review deleted successfully", response);
-    // console.log("Review deleted successfully");
+    console.log("Review deleted successfully", response);
+    console.log("Review deleted successfully");
   } catch (error: any) {
     console.error("Error deleting review:", error.message || error);
   }
