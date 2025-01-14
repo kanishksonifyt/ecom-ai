@@ -58,21 +58,12 @@ const deleteReview = async (id: string) => {
     if (!response.ok) {
       throw new Error("Failed to delete review");
     }
-    // console.log("Review deleted successfully");
   } catch (error) {
     console.error("Error deleting review:", error);
   }
 };
 
-// Routes configuration
-const routes = [
-  { name: "HeroSection", path: "/hero" },
-  { name: "CatalogSection", path: "/catalog" },
-  { name: "HighlightSection", path: "/highlight" },
-  { name: "ReviewSection", path: "/review" },
-  { name: "FeaturedSection", path: "/featured" },
-  { name: "Product on Homepage", path: "/items" },
-];
+
 
 // Add and update routes component
 const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
@@ -80,7 +71,6 @@ const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
   const [route, setRoute] = useState<string>(initialData?.route || "");
   const [text, setText] = useState<string>(initialData?.text || "");
   const [redirect, setRedirect] = useState<string>(initialData?.redirect || "");
-  const [index = 0, setIndex] = useState<number>(initialData?.index || 0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSubmit = async () => {
@@ -90,13 +80,12 @@ const AddOrUpdateRoute = ({ isUpdate = false, initialData = null }: any) => {
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, route, index, text, redirect }),
+        body: JSON.stringify({ title, route,  text, redirect }),
       });
       if (!response.ok) {
         throw new Error("Failed to save route");
       }
       setIsDrawerOpen(false);
-      // console.log(`${isUpdate ? "Route updated" : "Route added"} successfully`);
     } catch (error) {
       console.error(`Error ${isUpdate ? "updating" : "adding"} route:`, error);
     }

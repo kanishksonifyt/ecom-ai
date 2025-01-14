@@ -6,5 +6,5 @@ export const Featured = model.define("featured", {
   link: model.text(),
   image: model.text(),
   text: model.text(),
-  
+  type : model.text().nullable()
 });

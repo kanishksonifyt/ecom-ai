@@ -132,7 +132,7 @@ type GetPointByIdWorkflowInput = {
 }
 
 export const getHomeByOwnerIdStep = createStep(
-  "get-home-by-id-step",
+  "get-point-by-id-step",
   async (input: GetPointByIdWorkflowInput, { container }) => {
     const PointModuleService: PointModuleService =
       container.resolve(POINT_MODULE);
@@ -163,16 +163,16 @@ export type GetHomeByIdStepInput = {
 };
 
 export const getHomeByIdStep = createStep(
-  "get-home-by-id-step",
+  "get-point-by-id-step",
   async (input: GetHomeByIdStepInput, { container }) => {
     const PointModuleService: PointModuleService =
       container.resolve(POINT_MODULE);
 
     // console.log("input", input.id);
 
-    const home = await PointModuleService.retrievePoint(input.id);
+    const point = await PointModuleService.retrievePoint(input.id);
 
-    return new StepResponse(home, home);
+    return new StepResponse(point, point);
   }
 );
 
@@ -181,10 +181,10 @@ type GetHomeByIdWorkflowInput = {
 };
 
 export const getPointByIdWorkflow = createWorkflow(
-  "get-home-by-id",
+  "get-point-by-id",
   (input: GetHomeByIdWorkflowInput) => {
-    const home = getHomeByIdStep(input);
+    const point = getHomeByIdStep(input);
 
-    return new WorkflowResponse(home);
+    return new WorkflowResponse(point);
   }
 );

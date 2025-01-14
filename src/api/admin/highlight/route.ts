@@ -14,7 +14,7 @@ export const POST = async (
   res: MedusaResponse
 ) => {
   const { result } = await createHighlightWorkflow(req.scope).run({
-    input: {...req.validatedBody},
+    input: {...req.body},
   });
 
   res.json({ Highlight: result });
@@ -22,5 +22,6 @@ export const POST = async (
 
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { result } = await getAllHighlightsWorkflow(req.scope).run();
+  console.log(result)
   res.json({ highlights: result });
 };

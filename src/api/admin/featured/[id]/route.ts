@@ -10,7 +10,7 @@ import { PatchAdminCreateFeatured } from "../validators";
 
 type PatchAdminCreateFeaturedType = z.infer<typeof PatchAdminCreateFeatured>;
 
-export const PATCH = async (
+export const PUT = async (
   req: MedusaRequest<PatchAdminCreateFeaturedType>,
   res: MedusaResponse
 ) => {
@@ -19,7 +19,8 @@ export const PATCH = async (
     return res.status(400).json({ message: "Catalog id is required" });
   }
   const { body } = req;
-  // console.log("route hit", id);
+  console.log("route hit", id);
+  console.log(body)
 
   // Validate the request body
   const parsedBody = PatchAdminCreateFeatured.parse(body);

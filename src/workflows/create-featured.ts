@@ -97,6 +97,7 @@ export type EditFeaturedStepInput = {
   title?: string;
   text?: string;
   link?: string;
+  type?:string;
 };
 
 export const editFeaturedStep = createStep(
@@ -105,10 +106,13 @@ export const editFeaturedStep = createStep(
     const featuredService: FeaturedModuleService =
       container.resolve(FEATURED_MODULE);
 
+      console.log(input ,"this from workflwo")
+
     const updatedFeatured = await featuredService.updateFeatureds({
       id: input.id,
       image: input.image,
       link: input.link,
+      type : input.type,
     });
 
     return new StepResponse(updatedFeatured, updatedFeatured.id);

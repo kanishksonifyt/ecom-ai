@@ -29,6 +29,7 @@ export const createHighlightStep = createStep(
 type CreateHighlightWorkflowInput = {
   image: string;
   link: string;
+  product_id?: string;
 };
 
 export const createHighlightWorkflow = createWorkflow(
@@ -66,6 +67,7 @@ export type UpdateHighlightStepInput = {
   image?: string;
   link?: string;
   product_id?: string;
+  type?: string;
 };
 
 export const updateHighlightStep = createStep(
@@ -81,6 +83,7 @@ export const updateHighlightStep = createStep(
       image: input.image,
       link: input.link,
       product_id: input.product_id,
+      type : input.type
     });
 
     return new StepResponse(updatedHighlight, updatedHighlight.id);
@@ -92,6 +95,7 @@ type UpdateHighlightWorkflowInput = {
   image?: string;
   link?: string;
   product_id?: string;
+  type?: string
 };
 
 export const updateHighlightWorkflow = createWorkflow(

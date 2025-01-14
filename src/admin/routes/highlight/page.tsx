@@ -114,6 +114,33 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
     }
   };
 
+  const uploadvideo = async (file: File) => {
+    if (file) {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const response = await axios.post(
+          "http://148.135.138.221:4000/upload-video",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization:
+                "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
+            },
+          }
+        );
+
+        setImage(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);

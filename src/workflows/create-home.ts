@@ -183,7 +183,7 @@ export const getHomeByIdStep = createStep(
     const HomepageModuleService: HomepageModuleService =
       container.resolve(HOMEPAGE_MODULE);
 
-    // console.log("input", input.id);
+    console.log("input", input.id);
 
     const home = await HomepageModuleService.retrieveHomepage(input.id);
 

@@ -211,6 +211,7 @@ const HeroSectionForm = ({
       setSecondButtonRoute("");
       setImage(null);
       setResponseImageLink("");
+      setActiveTab("general")
       toast.dismiss();
       toast.success("Success", {
         description: "Hero section created successfully",
@@ -444,6 +445,7 @@ const HeroSectionForm = ({
                     submitvalidation();
                     return;
                   }
+                  
                   if (validateCurrentTab()) handleNext();
                 }}
                 // disabled={!isCurrentTabCompleted}

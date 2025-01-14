@@ -35,6 +35,9 @@ module.exports = defineConfig({
     //   },
     // },
     {
+      resolve: "./src/modules/catalogfeatured",
+    },
+    {
       resolve: "@medusajs/medusa/payment",
       options: {
         providers: [
