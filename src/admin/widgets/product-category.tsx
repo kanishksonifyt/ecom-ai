@@ -176,7 +176,7 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
       </div>
 
       {tempImage && (
-        <Container className="h-[30px] p-0 overflow-hidden">
+        <Container className=" p-0 overflow-hidden">
           <img src={tempImage} className="w-full h-full object-cover" alt="Product Category" />
         </Container>
       )}
