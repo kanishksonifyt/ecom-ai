@@ -16,9 +16,10 @@ import {
   PencilSquare,
   Plus,
   Trash,
+  Loader
 } from "@medusajs/icons";
 import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const fetchLoyaltyPoints = async (
@@ -99,8 +100,8 @@ const DropdownMenuDemo = ({ id, setter }: { id: string; setter: any }) => {
   const handleSave = async () => {
     if (tempLoyaltyPoints !== null) {
       try {
-       const response =  await editPoints(tempLoyaltyPoints);
-       setter(response);
+        const response = await editPoints(tempLoyaltyPoints);
+        setter(response);
         setIsModalOpen(false);
       } catch (error) {
         console.error("Error saving loyalty points:", error);
@@ -157,6 +158,7 @@ const ProductWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const productId = data.id; // Assuming `data.id` is the product ID
+  const [loading, setloading] = useState(false)
 
   useEffect(() => {
     // Fetch loyalty points when the component mounts
@@ -174,66 +176,131 @@ const ProductWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
     console.log(loyaltyPoints, " this is loyalty point");
   }, [loyaltyPoints]);
 
+  const [discount, setDiscount] = useState(0); // State to hold the discount value
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null); // useRef to persist debounce timer
+
+  useEffect(() => {
+    if (data.metadata?.discount) {
+      setDiscount(data.metadata?.discount);
+    }
+  },[data.metadata]);
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newDiscount = parseInt(event.target.value, 10);
+    setDiscount(newDiscount);
+    setloading(true);
+
+    // Clear the previous timeout (if any) before setting a new one
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+    // Set a new timeout for 800ms
+    debounceTimer.current = setTimeout(() => {
+      axios
+        .post(
+          `/admin/products/${data.id}`,
+          {
+            metadata: {
+              discount: newDiscount,
+            },
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log("Discount updated:", res);
+          setDiscount(newDiscount)
+          setloading(false)
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+    }, 700); // 800ms delay before API call
+  };
+
   return (
-    <Container className="divide-y p-0 flex flex-col">
-      <div className="flex items-start justify-between px-6 py-4 flex-col">
-        <div className="flex justify-between items-center w-full">
-          <Heading level="h2">Loyalty Points</Heading>
-          {loyaltyPoints && (
-            <DropdownMenuDemo
-              id={data.id}
-              setter={setLoyaltyPoints}
-            />
-          )}
+    <>
+      <Container className="relative">
+        {loading && <div className="absolute top-0 right-10 flex justify-center items-center gap-2 ">
+          saving 
+          <div className="animate-spin">
+            < Loader/>
+          </div>
+        </div>}
+        <Heading level="h3">Add Discount on Product</Heading>
+        <div style={{ marginTop: "20px" }} className="flex flex-col">
+          <label htmlFor="discount-slider" style={{ marginRight: "10px" }}>
+            Discount: {discount}%
+          </label>
+          <input
+            id="discount-slider"
+            type="range"
+            min="0"
+            max="100"
+            value={discount}
+            onChange={handleSliderChange}
+          />
         </div>
-        <div className="flex gap-4 justify-center items-start p-0">
-          <GiftSolid className="p-0 mt-1" />
-          <span>{loyaltyPoints ? loyaltyPoints.coins : 0}</span>
+      </Container>
+      <Container className="divide-y p-0 flex flex-col">
+        <div className="flex items-start justify-between px-6 py-4 flex-col">
+          <div className="flex justify-between items-center w-full">
+            <Heading level="h2">Loyalty Points</Heading>
+            {loyaltyPoints && (
+              <DropdownMenuDemo id={data.id} setter={setLoyaltyPoints} />
+            )}
+          </div>
+          <div className="flex gap-4 justify-center items-start p-0">
+            <GiftSolid className="p-0 mt-1" />
+            <span>{loyaltyPoints ? loyaltyPoints.coins : 0}</span>
+          </div>
         </div>
-      </div>
-      {!loyaltyPoints && (
-        <div className="px-6 py-4">
-          <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
-            <Drawer.Trigger asChild>
-              <Button>Add loyalty Point to this product</Button>
-            </Drawer.Trigger>
-            <Drawer.Content>
-              <Drawer.Header>
-                <Drawer.Title>Edit Variant</Drawer.Title>
-              </Drawer.Header>
-              <Drawer.Body className="p-4">
-                <Text className="pl-4">Loyalty Points</Text>
-                <Input
-                  className="mt-2"
-                  onChange={(e) =>
-                    settempLoyaltyPoints(parseInt(e.target.value) || null)
-                  }
-                  value={temployaltyPoints !== null ? temployaltyPoints : ""}
-                />
-              </Drawer.Body>
-              <Drawer.Footer>
-                <Drawer.Close asChild>
-                  <Button variant="secondary">Cancel</Button>
-                </Drawer.Close>
-                <Button
-                  disabled={!temployaltyPoints}
-                  onClick={() =>
-                    temployaltyPoints !== null &&
-                    makeLoyaltyPoint(
-                      data.id,
-                      temployaltyPoints,
-                      setLoyaltyPoints
-                    ).then((res) => setIsModalOpen(false))
-                  }
-                >
-                  Save
-                </Button>
-              </Drawer.Footer>
-            </Drawer.Content>
-          </Drawer>
-        </div>
-      )}
-    </Container>
+        {!loyaltyPoints && (
+          <div className="px-6 py-4">
+            <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <Drawer.Trigger asChild>
+                <Button>Add loyalty Point to this product</Button>
+              </Drawer.Trigger>
+              <Drawer.Content>
+                <Drawer.Header>
+                  <Drawer.Title>Edit Variant</Drawer.Title>
+                </Drawer.Header>
+                <Drawer.Body className="p-4">
+                  <Text className="pl-4">Loyalty Points</Text>
+                  <Input
+                    className="mt-2"
+                    onChange={(e) =>
+                      settempLoyaltyPoints(parseInt(e.target.value) || null)
+                    }
+                    value={temployaltyPoints !== null ? temployaltyPoints : ""}
+                  />
+                </Drawer.Body>
+                <Drawer.Footer>
+                  <Drawer.Close asChild>
+                    <Button variant="secondary">Cancel</Button>
+                  </Drawer.Close>
+                  <Button
+                    disabled={!temployaltyPoints}
+                    onClick={() =>
+                      temployaltyPoints !== null &&
+                      makeLoyaltyPoint(
+                        data.id,
+                        temployaltyPoints,
+                        setLoyaltyPoints
+                      ).then((res) => setIsModalOpen(false))
+                    }
+                  >
+                    Save
+                  </Button>
+                </Drawer.Footer>
+              </Drawer.Content>
+            </Drawer>
+          </div>
+        )}
+      </Container>
+    </>
   );
 };
 

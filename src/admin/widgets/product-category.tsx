@@ -165,7 +165,9 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   console.log(data.metadata);
 
   return (
-    <Container className="divide-y flex flex-col min-h-[100px] gap-4">
+  <div className="flex flex-col" >
+  
+   <Container className="divide-y flex flex-col min-h-[100px] gap-4">
       <div className="flex justify-end ">
         <DrawerDemo
           setTempimage={setTempImage}
@@ -181,6 +183,7 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
         </Container>
       )}
     </Container>
+  </div>
   );
 };
 
