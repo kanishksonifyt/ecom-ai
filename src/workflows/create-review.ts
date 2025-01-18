@@ -154,3 +154,24 @@ export const getAllReviewsWorkflow = createWorkflow("get-all-reviews", () => {
 
   return new WorkflowResponse(reviews);
 });
+
+export type GetReviewsByProductIdStepInput = {
+  product_id: string; // Ensure this matches your expected property
+};
+
+export const getReviewsByProductIdStep = createStep(
+  "get-reviews-by-product-id-step",
+  async (input: GetReviewsByProductIdStepInput, { container }) => {
+    const reviewService: ReviewModuleService = container.resolve(REVIEW_MODULE);
+    const reviews = await reviewService.listReviews({ product_id: input.product_id });
+    return new StepResponse(reviews, reviews.map((r) => r.id));
+  }
+);
+
+export const getReviewsByProductIdWorkflow = createWorkflow(
+  "get-reviews-by-product-id",
+  (input: GetReviewsByProductIdStepInput) => {
+    const reviews = getReviewsByProductIdStep(input);
+    return new WorkflowResponse(reviews);
+  }
+);
