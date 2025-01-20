@@ -90,31 +90,31 @@ export const POST = async (
   console.log(user);
 
  
-  const productpoint = await getPointByOwnerIdWorkflow(req.scope).run({
-    input: { owner_id: response.result.id },
-  }) as any;
-  if(productpoint){
-    const userpoint = await getPointByOwnerIdWorkflow(req.scope).run({
-      input: { owner_id: user.id },
-    });
+  // const productpoint = await getPointByOwnerIdWorkflow(req.scope).run({
+  //   input: { owner_id: response.result.id },
+  // }) as any;
+  // if(productpoint){
+  //   const userpoint = await getPointByOwnerIdWorkflow(req.scope).run({
+  //     input: { owner_id: user.id },
+  //   });
   
-    if (!userpoint) {
-      const { result } = await createPointWorkflow(req.scope).run({
-        input: {
-          coins: productpoint.coins ,
-          relatedto: "user",
-          owner_id: user.id,
-        },
-      });
-    }else{
-      const { result } = await updatePointWorkflow(req.scope).run({
-        input: {
-          id : userpoint.id,
-          coins: productpoint.coins + userpoint.coins ,
-        },
-      });
-    }
-  }
+  //   if (!userpoint) {
+  //     const { result } = await createPointWorkflow(req.scope).run({
+  //       input: {
+  //         coins: productpoint.coins ,
+  //         relatedto: "user",
+  //         owner_id: user.id,
+  //       },
+  //     });
+  //   }else{
+  //     const { result } = await updatePointWorkflow(req.scope).run({
+  //       input: {
+  //         id : userpoint.id,
+  //         coins: productpoint.coins + userpoint.coins ,
+  //       },
+  //     });
+  //   }
+  // }
 
   await syncOrderToCmsWorkflow(req.scope).run({
     input: response.result,

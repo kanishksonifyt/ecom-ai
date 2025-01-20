@@ -161,7 +161,7 @@ export function DrawerDemo({
 const CategoryManager = ({
   categories,
   collection,
-  setCollection ,
+  setCollection,
 }: {
   categories: any;
   collection: any;
@@ -169,18 +169,26 @@ const CategoryManager = ({
 }) => {
   const [categoryStates, setCategoryStates] = useState(
     // Initialize state to track which categories are selected
-    () =>
+    []
+  );
+
+  useEffect(() => {
+    setCategoryStates(() =>
       categories.reduce((acc: any, category: any) => {
         acc[category.id] = collection.metadata?.categories?.some(
           (existingCategory: any) => existingCategory.id === category.id
         );
         return acc;
       }, {})
-  );
+    );
+  }, [collection, categories]);
+
+  // console.log(collection.metadata?.categories , categoryStates)
 
   const addData = (newCategory: any) => {
+    // Ensure categories is an array before adding the new category
     const updatedCategories = [
-      ...(collection.metadata.categories || []),
+      ...(collection.metadata.categories || []), // Fallback to an empty array
       {
         name: newCategory.name,
         image: newCategory.metadata?.img,
@@ -204,7 +212,7 @@ const CategoryManager = ({
       )
       .then((res) => {
         console.log("Category added successfully:", res.data.collection);
-        setCollection(res.data.collection)
+        setCollection(res.data.collection);
       })
       .catch((error) => {
         console.error("Error adding category:", error.message);
@@ -212,7 +220,8 @@ const CategoryManager = ({
   };
 
   const removeData = (categoryId: string) => {
-    const updatedCategories = collection.metadata.categories.filter(
+    // Ensure categories is an array before filtering
+    const updatedCategories = (collection.metadata.categories || []).filter(
       (category: any) => category.id !== categoryId
     );
 
@@ -232,7 +241,7 @@ const CategoryManager = ({
       )
       .then((res) => {
         console.log("Category removed successfully:", res.data.collection);
-        setCollection(res.data.collection)
+        setCollection(res.data.collection);
       })
       .catch((error) => {
         console.error("Error removing category:", error.message);
@@ -244,6 +253,7 @@ const CategoryManager = ({
 
     if (!isPresent) {
       addData(item);
+      // null
     } else {
       removeData(item.id);
     }
@@ -321,7 +331,9 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   );
 
   const [categories, setCategories] = useState([]);
-  const [collection, setCollection] = useState([]);
+  const [collection, setCollection] = useState<DetailWidgetProps<AdminProduct>>(
+    []
+  );
 
   //console.log(data.metadata);
 
@@ -335,6 +347,18 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   useEffect(() => {
     category();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setCollection(data);
+    } else {
+      setCollection([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(typeof collection, collection.metadata?.categories);
+  }, [collection , collection.metadata]);
 
   return (
     <div className="flex gap-3">
@@ -369,29 +393,23 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
           />
         </div>
         <div className="h-[85%] mt-[2%] w-full flex flex-wrap p-2 gap-2">
-            {data?.metadata?.categories && data?.metadata?.categories.map((item: any, index: number) =>
-
-               (
-                <Container
-                  key={index}
-                  className="h-[300px] w-[200px] flex flex-col items-center justify-between p-3 border rounded-md shadow-md"
-                >
-                  
-                    <div className="text-sm font-medium mb-2">
-                      <span>Title: </span>
-                      {item.name}
-                    </div>
-                    <img
-                      src={item.image || "/default-image.jpg"}
-                      className="w-full h-[200px] object-cover rounded-md mb-3"
-                      alt={`${item.name} image`}
-                    />
-                    
-                  
-                </Container>
-              )
-            )}
-          
+          {Array.isArray(collection?.metadata?.categories) &&
+            collection?.metadata?.categories.map((item: any, index: number) => (
+              <Container
+                key={index}
+                className="h-[300px] w-[200px] flex flex-col items-center justify-between p-3 border rounded-md shadow-md"
+              >
+                <div className="text-sm font-medium mb-2">
+                  <span>Title: </span>
+                  {item.name}
+                </div>
+                <img
+                  src={item.image || "/default-image.jpg"}
+                  className="w-full h-[200px] object-cover rounded-md mb-3"
+                  alt={`${item.name} image`}
+                />
+              </Container>
+            ))}
         </div>
       </Container>
     </div>
