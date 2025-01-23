@@ -218,36 +218,32 @@ const HeroSectionForm = ({
     }
   };
 
-  const uploadImage = async () => {
+  const uploadImage = async (file: any) => {
     if (image) {
       try {
-        setLoading(true);
+        // setLoading(true);
         const formData = new FormData();
-        formData.append("image", image);
+        formData.append("image", file);
 
-        const response = await axios.post(
-          "http://148.135.138.221:4000/upload",
-          formData,
-          {
+        const response = await axios
+          .post("http://148.135.138.221:4000/upload/100", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization:
                 "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
             },
-          }
-        );
+          })
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
 
         setResponseImageLink(response.data);
-        setLoading(false);
+        // setLoading(false);
       } catch (error) {
         console.error("Error uploading image:", error);
+        // setLoading(false)
       }
     }
   };
-
-  useEffect(() => {
-    uploadImage();
-  }, [image]);
 
   return (
     <form id="heroForm" onSubmit={handleSubmit}>
@@ -282,7 +278,7 @@ const HeroSectionForm = ({
               <ProgressTabs.Content value="general">
                 <div className="flex flex-col gap-y-2 mb-3">
                   <Label htmlFor="title" className="text-ui-fg-subtle ">
-                    Title
+                    Title sdjvbsdjvbh
                   </Label>
                   <Input
                     id="title"
@@ -377,8 +373,8 @@ const HeroSectionForm = ({
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        setImage(file);
+                      if (file instanceof File) {
+                        uploadImage(file);
                       }
                     }}
                   />

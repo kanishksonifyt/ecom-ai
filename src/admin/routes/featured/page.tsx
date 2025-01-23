@@ -44,32 +44,7 @@ const HighlightSectionForm: React.FC<FeaturedSectionFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const uploadImage = async (file: File) => {
-    if (file) {
-      try {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append("image", file);
 
-        const response = await axios.post(
-          "http://148.135.138.221:4000/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization:
-                "Bearer 5d92b8f69c9dda89f38c10fa6750376a25b53a9afd47e74951104769630d4ccc",
-            },
-          }
-        );
-        // console.log("response", response);
-        setLink(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-    }
-  };
 
   const resetForm = () => {
     setImage("");
@@ -89,7 +64,7 @@ const HighlightSectionForm: React.FC<FeaturedSectionFormProps> = ({
       text,
       link,
       image,
-      type : "",
+      type: "",
     };
 
     try {
@@ -247,7 +222,7 @@ const CustomPage = () => {
       </Container>
       <div className="flex flex-wrap gap-10 items-center justify-center">
         {featuredSections.length > 0 ? (
-          featuredSections.map((section : any) => (
+          featuredSections.map((section: any) => (
             <Featuredcard
               key={section.id}
               id={section.id}

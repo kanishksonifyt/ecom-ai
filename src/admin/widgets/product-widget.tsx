@@ -222,7 +222,7 @@ const ProductWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
 
   return (
     <>
-      <Container className="relative">
+      {/* <Container className="relative">
         {loading && <div className="absolute top-0 right-10 flex justify-center items-center gap-2 ">
           saving 
           <div className="animate-spin">
@@ -243,7 +243,7 @@ const ProductWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
             onChange={handleSliderChange}
           />
         </div>
-      </Container>
+      </Container> */}
       <Container className="divide-y p-0 flex flex-col">
         <div className="flex items-start justify-between px-6 py-4 flex-col">
           <div className="flex justify-between items-center w-full">

@@ -42,7 +42,7 @@ export function AddImageToCatalog({ setCatalogImage }: AddImageToCatalogProps) {
       formData.append("image", file);
 
       const response = await axios.post(
-        "http://148.135.138.221:4000/upload",
+        "http://148.135.138.221:4000/upload/100",
         formData,
         {
           headers: {
@@ -193,6 +193,14 @@ const Featuredcard = ({
         type: useCatalog ? "catalog" : "video",
       });
 
+      console.log({
+        image: useCatalog ? "" : editImage,
+        link: editLink,
+        title: edittitle,
+        text: edittext,
+        type: useCatalog ? "catalog" : "video",
+      })
+
       // if (response.status !== 200) {
       //   const errorData = await response.json();
       //   throw new Error(
@@ -200,16 +208,24 @@ const Featuredcard = ({
       //   );
       // }
 
-      const data = (await response.status) == 201;
+      const data = (await response.status) == 200;
+
+      console.log(response)
       setfeaturedSections((prevSections: any) =>
         prevSections.map((section: any) =>
-          section.id === id ? { ...section, image: useCatalog ? "" : editImage,
-            link: editLink,
-            title: edittitle,
-            text: edittext,
-            type: useCatalog ? "catalog" : "video", } : section
+          section.id === id
+            ? {
+                ...section,
+                image: useCatalog ? "" : editImage,
+                link: editLink,
+                title: edittitle,
+                text: edittext,
+                type: useCatalog ? "catalog" : "video",
+              }
+            : section
         )
       );
+      // setFocusModalOpen(false);
       return data;
     } catch (error: any) {
       console.error("Error updating catalog section:", error);
@@ -222,6 +238,8 @@ const Featuredcard = ({
       return;
     }
 
+    console.log("save hit")
+
     // const payload = {
     //   image: useCatalog ? "" : editImage,
     //   link: editLink,
@@ -233,6 +251,7 @@ const Featuredcard = ({
     const result = await updatecatalogSection(id);
     if (result) {
       setFocusModalOpen(false);
+      console.log("sves")
     }
   };
 
@@ -267,15 +286,16 @@ const Featuredcard = ({
     try {
       const response = await axios.get("/admin/catalogfeatured/");
       console.log(response);
-      setCatalogImages(response.data.catalogfeatureds); // Assuming this API returns a list of image URLs
+      setCatalogImages(response.data.catalogfeatureds); // Assuming this dvsdvAPI returns a list of image URLs
+      
     } catch (error) {
       console.error("Error fetching catalog images:", error);
     }
   };
 
-  useEffect(()=>{
-    fetchCatalogImages()
-  },[])
+  useEffect(() => {
+    fetchCatalogImages();
+  }, []);
 
   const deleteCatalog = (
     id: string,
@@ -300,26 +320,26 @@ const Featuredcard = ({
   return (
     <div className="flex w-full gap-2 h-[350px] flex-col">
       <Container className="divide-y p-0 h-[90%] max-h-[300px] flex items-center justify-between w-full relative overflow-hidden">
-        <div  className="w-full h-full object-cover" >
-           {type == "catalog" ?   <div className="flex flex-wrap">
-            {catalogImages.map((data: any, index: any) => (
-                        <div
-                          key={index[index]}
-                          className="w-[50%] rounded-t-2 overflow-hidden p-0"
-                        >
-                          <img
-                            key={index}
-                            src={data.image}
-                            className="h-16 w-full object-cover cursor-pointer "
-                            // onClick={() => setEditImage(imageUrl)}
-                          />
-                         
-                        </div>
-                      ))}
-            </div> : <video autoPlay muted loop src={image}></video> }
-           
-          
-
+        <div className="w-full h-full object-cover">
+          {type == "catalog" ? (
+            <div className="flex flex-wrap">
+              {catalogImages.map((data: any, index: any) => (
+                <div
+                  key={index[index]}
+                  className="w-[50%] rounded-t-2 overflow-hidden p-0"
+                >
+                  <img
+                    key={index}
+                    src={data.image}
+                    className="h-16 w-full object-cover cursor-pointer "
+                    // onClick={() => setEditImage(imageUrl)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <video autoPlay muted loop src={image}></video>
+          )}
         </div>
         <Container className="flex flex-col items-start justify-center px-6 py-4 h-full w-full">
           <Container>

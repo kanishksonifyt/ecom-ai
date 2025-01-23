@@ -50,7 +50,7 @@ const HighlightSectionForm: React.FC<CatalogSectionFormProps> = ({
         formData.append("image", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload",
+          "http://148.135.138.221:4000/upload/100",
           formData,
           {
             headers: {
