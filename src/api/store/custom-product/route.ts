@@ -38,7 +38,6 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       }
     );
 
-    const preices  = await priceService.calculatePrices()
 
     // const product2 = await productService
 
@@ -85,7 +84,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     const updatedProducts = applyDiscountToProduct(promotion[0].application_method, product);
 
     // Send categories in response
-    res.json({ updatedProducts , preices });
+    res.json({ updatedProducts  });
   } catch (error) {
     console.error("Error in GET handler:", error);
     res.status(500).json({ error: "Failed to retrieve product categories" });

@@ -10,6 +10,7 @@ import {
 } from "@medusajs/types";
 const Razorpay = require("razorpay");
 import { Logger } from "@medusajs/framework/types";
+import axios from "axios";
 
 const razorpay = new Razorpay({
   key_id: "rzp_test_v9OipkUZNTnkXj", // Replace with your Razorpay Key ID
@@ -34,6 +35,8 @@ type InjectedDependencies = {
 class MyRazorPayemntgateway extends AbstractPaymentProvider<Options> {
   static identifier = "razorpay";
 
+  
+
   protected logger_: Logger;
   protected options_: Options;
   // assuming you're initializing a client
@@ -45,12 +48,45 @@ class MyRazorPayemntgateway extends AbstractPaymentProvider<Options> {
     this.logger_ = container.logger;
     this.options_ = options;
   }
+
+  async cancelPayment(
+    paymentData: Record<string, unknown>
+  ): Promise<PaymentProviderError | PaymentProviderSessionResponse["data"]> {
+    const paymentId = paymentData.paymentId as string;
+
+    try {
+      const payment = await razorpay.payments.fetch(paymentId);
+
+      if (payment.status !== "captured") {
+        throw new Error("Only captured payments can be canceled.");
+      }
+
+      const canceledPayment = await razorpay.payments.refund(payment.id, {
+        amount: payment.amount, // Refund the full amount
+      });
+
+      console.log("Payment canceled successfully:", canceledPayment);
+      return canceledPayment;
+    } catch (error) {
+      console.error("Error canceling payment:", error);
+      throw error;
+    }
+  }
+
   async capturePayment(
     paymentData: Record<string, unknown>
   ): Promise<PaymentProviderError | PaymentProviderSessionResponse["data"]> {
-    console.log( paymentData , )
+    console.log(paymentData);
     const paymentId = paymentData.paymentId as string; // Get the payment ID from the function parameter
     const amount = paymentData.amount as number; // Get the amount from the function parameter
+
+    // Initialize Razorpay instance
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_v9OipkUZNTnkXj", // Replace with your Razorpay Key ID
+      key_secret: process.env.RAZORPAY_KEY_SECRET || "ihJ2uNbLuoKHDrJoLIpTBltO", // Replace with your Razorpay Key Secret
+    });
+
+    console.log("capture is run");
 
     try {
       const payment = await razorpay.payments.capture(paymentId, amount);
@@ -73,50 +109,64 @@ class MyRazorPayemntgateway extends AbstractPaymentProvider<Options> {
       }
   > {
     try {
-      const paymentId = paymentSessionData.id as string;
-      const amount = paymentSessionData.amount as number;
-
-      if (!paymentId || !amount) {
-        throw new Error("Invalid payment session data. Missing ID or amount.");
+      // Validate payment session data
+      const orderId = paymentSessionData.id as string | undefined; // Use 'orderId' instead of 'paymentId'
+      const amount = paymentSessionData.amount as number | undefined;
+  
+      if (!orderId || typeof orderId !== "string") {
+        throw new Error("Invalid or missing order ID in session data.");
       }
-
+  
+      if (!amount || typeof amount !== "number") {
+        throw new Error("Invalid or missing amount in session data.");
+      }
+  
+      // Log the order details
+      console.log("Authorize Payment: 1", orderId, amount);
+  
+      // Initialize Razorpay instance
+      const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_v9OipkUZNTnkXj",
+        key_secret: process.env.RAZORPAY_KEY_SECRET || "ihJ2uNbLuoKHDrJoLIpTBltO",
+      });
+  
+      // Fetch payments associated with the order ID
+      const payments = await razorpay.orders.fetchPayments(orderId);
+      console.log("Payments: 2", payments.items[0]);
+  
+      if (!payments || !payments.items || payments.items.length === 0) {
+        throw new Error("No payments found for the given order ID.");
+      }
+  
+      // Assuming you need the first successful payment ID
+      
+     
+  
+      // Return success if payment is captured
       return {
-        status: "pending",
+        status: "captured",
         data: {
-          id: paymentId,
-          amount,
+          paymentId: payments.items[0].id,
+          amount: payments.items[0].amount,
+          currency: payments.items[0].currency,
+
         },
       };
     } catch (error) {
       console.error("Error during authorizePayment:", error);
-
+  
       return {
         status: "error",
         data: {
           errorMessage:
-            error instanceof Error ? error.message : "Unknown error occurred",
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred",
         },
       };
     }
   }
-
-  async cancelPayment(
-    paymentData: Record<string, unknown>
-  ): Promise<PaymentProviderError | PaymentProviderSessionResponse["data"]> {
-    const externalId = paymentData.id as string;
-
-    try {
-      const payment = await razorpay.payments.fetch(externalId);
-      const canceledPayment = await razorpay.payments.refund(payment.id, {
-        amount: payment.amount,
-      });
-      console.log("Payment canceled successfully:", canceledPayment);
-      return canceledPayment;
-    } catch (error) {
-      console.error("Error canceling payment:", error);
-      throw error;
-    }
-  }
+  
 
   async initiatePayment(
     Context: any
@@ -265,35 +315,8 @@ class MyRazorPayemntgateway extends AbstractPaymentProvider<Options> {
   async getWebhookActionAndData(
     data: ProviderWebhookPayload["payload"]
   ): Promise<WebhookActionResult> {
-    try {
-      const { event, payload } = data;
-      const paymentDetails = payload?.payment;
-
-      if (!event || !paymentDetails) {
-        throw new Error("Invalid webhook payload");
-      }
-
-      switch (event) {
-        case "payment.captured":
-          return {
-            action: "capture",
-            data: paymentDetails,
-          };
-        case "payment.failed":
-          return {
-            action: "fail",
-            data: paymentDetails,
-          };
-        default:
-          return {
-            action: "unknown",
-            data: paymentDetails,
-          };
-      }
-    } catch (error) {
-      console.error("Error handling webhook action:", error);
-      throw new Error("Failed to process webhook data.");
-    }
+    // Parse the webhook payload and return the action and data
+    throw new Error("Method not implemented.");
   }
 }
 

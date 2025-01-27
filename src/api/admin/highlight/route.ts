@@ -14,7 +14,7 @@ export const POST = async (
   res: MedusaResponse
 ) => {
   const { result } = await createHighlightWorkflow(req.scope).run({
-    input: {...req.body},
+    input: { ...req.body, image: req.body.image || "", link: req.body.link || "" },
   });
 
   res.json({ Highlight: result });

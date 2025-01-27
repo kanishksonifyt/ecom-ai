@@ -73,7 +73,7 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
     }
 
     // console.log("id", id);
-    if (product_id.product) {
+    if (product_id[0]?.product) {
       await remoteLink.dismiss({
         [Modules.PRODUCT]: {
           product_id: product_id[0].product.id,

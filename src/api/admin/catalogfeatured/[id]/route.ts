@@ -1,6 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import {
-  editcaCatalogFeaturedWorkflow,
+  editcaCaloghightlightWorkflow,
   deletecatalogfeaturedWorkflow,
 } from "../../../../workflows/create-catalogfeatured";
 
@@ -26,7 +26,7 @@ export const PATCH = async (
     const parsedBody = PatchAdminCreateCatalog.parse(body);
 
     // Run the edit workflow
-    const updatedCatalog = await editcaCatalogFeaturedWorkflow(req.scope).run({
+    const updatedCatalog = await editcaCaloghightlightWorkflow(req.scope).run({
       input: { id, ...parsedBody },
     });
 

@@ -1879,7 +1879,7 @@
     tailwindcss "^3.3.6"
     vite "^5.2.11"
 
-"@medusajs/admin-sdk@2.1.3", "@medusajs/admin-sdk@latest":
+"@medusajs/admin-sdk@2.1.3":
   version "2.1.3"
   resolved "https://registry.npmjs.org/@medusajs/admin-sdk/-/admin-sdk-2.1.3.tgz"
   integrity sha512-hE7GqVyfTBbFGGNmdy7r1CiJ/QYTnAoTUUvWt+eZXdm+E4lwgL9dMmYXaOKqwoc7NyEd9FzOWqj/V43bRZ9VIA==
@@ -1952,7 +1952,7 @@
   resolved "https://registry.npmjs.org/@medusajs/cart/-/cart-2.1.3.tgz"
   integrity sha512-s/jg4pkQwhhpLs6OHNjnqenZ9V9nd3+Pw6wGUW8Y/siCjJs11JUsvzWOs2QZbSxi+v/IYX28Ih35mrXB5/4ORA==
 
-"@medusajs/cli@^2.0.0", "@medusajs/cli@2.1.3", "@medusajs/cli@latest":
+"@medusajs/cli@^2.0.0", "@medusajs/cli@2.1.3":
   version "2.1.3"
   resolved "https://registry.npmjs.org/@medusajs/cli/-/cli-2.1.3.tgz"
   integrity sha512-0nxeJiliX7inv0StABgl72g6VhrIt1qq+5Krmmm/eMlGdnPTDgufpRBpo0ktj9D9vaq33yGpsCJadH5rDh69gg==
@@ -2152,7 +2152,7 @@
   resolved "https://registry.npmjs.org/@medusajs/locking/-/locking-2.1.3.tgz"
   integrity sha512-Y28T4GOD0heTzpH0FHNBilOoYchTgFlM6eUChJHUqhigwgRSsja3+z9k5/RWnNevW71aw5cli5i5f02mnAHYNg==
 
-"@medusajs/medusa@^2.0.0", "@medusajs/medusa@^2.1.3", "@medusajs/medusa@latest":
+"@medusajs/medusa@^2.0.0", "@medusajs/medusa@^2.1.3":
   version "2.1.3"
   resolved "https://registry.npmjs.org/@medusajs/medusa/-/medusa-2.1.3.tgz"
   integrity sha512-cCo7HiFG6z6SA/X44ae/2vaBuCIIF9jGgpVCvigPABwhD65NFunIDv+VlclWt5algO7DwOKJLDru42krsgzPjg==
@@ -4359,13 +4359,6 @@
   dependencies:
     "@sendgrid/client" "^8.1.4"
     "@sendgrid/helpers" "^8.0.0"
-
-"@sgftech/payment-razorpay@^2.1.11":
-  version "2.1.11"
-  resolved "https://registry.npmjs.org/@sgftech/payment-razorpay/-/payment-razorpay-2.1.11.tgz"
-  integrity sha512-5d1DPZ1GQ6QqAJ0ehSQIDZh/inHZnqA0GcnFEW71bIJtYZNfZ9AZCNAqyZ5F4vTb/GOOjP5ZQBG+WeHxgVSohQ==
-  dependencies:
-    razorpay "^2.9.5"
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
