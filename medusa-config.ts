@@ -36,6 +36,26 @@ module.exports = defineConfig({
       }
     },
     {
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/fulfillment-manual",
+            id: "manual",
+          },
+          {
+            resolve: "./src/modules/my-fulfillment",
+            id : "shiprocket-fulfillment",
+            options: {
+              email: process.env.SHIPROCKET_EMAIL, //(required)
+              password: process.env.SHIPROCKET_PASSWORD, //(required)
+              base_url: process.env.SHIPROCKET_BASE_URL, //(required)
+            }
+          }
+        ]
+      }
+    },
+    {
       resolve: "./src/modules/point",
     },
 
