@@ -127,7 +127,7 @@ export const deletePointWorkflow = createWorkflow(
   }
 );
 
-type GetPointByIdWorkflowInput = {
+export type GetPointByIdWorkflowInput = {
   owner_id: string
 }
 
