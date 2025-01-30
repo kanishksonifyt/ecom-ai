@@ -47,7 +47,7 @@ export function DrawerDemo({
         formData.append("image", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload/100",
+          `https://storage.themajesticpeacock.com/upload/100`,
           formData,
           {
             headers: {
@@ -167,9 +167,11 @@ const CategoryManager = ({
   collection: any;
   setCollection: any;
 }) => {
-  const [categoryStates, setCategoryStates] = useState(
+  const [categoryStates, setCategoryStates] = useState<{
+    [key: string]: boolean;
+  }>(
     // Initialize state to track which categories are selected
-    []
+    {}
   );
 
   useEffect(() => {
@@ -358,7 +360,7 @@ const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
 
   useEffect(() => {
     console.log(typeof collection, collection.metadata?.categories);
-  }, [collection , collection.metadata]);
+  }, [collection, collection.metadata]);
 
   return (
     <div className="flex gap-3">

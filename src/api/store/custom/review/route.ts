@@ -1,12 +1,11 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import {
   createReviewWorkflow,
-  getAllReviewsWorkflow,
-} from "../../../workflows/create-review";
+} from "../../../../workflows/create-review";
 import { z } from "zod";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
-import { REVIEW_MODULE } from "../../../modules/review";
+import { REVIEW_MODULE } from "../../../../modules/review";
 import { PostAdminCreateReview, PatchAdminEditReview } from "./validators";
 
 
@@ -45,9 +44,4 @@ export const POST = async (
   }
 
   res.json({ review: result });
-};
-
-export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
-  const { result } = await getAllReviewsWorkflow(req.scope).run();
-  res.json({ reviews: result });
 };

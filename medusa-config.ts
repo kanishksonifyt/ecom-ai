@@ -26,10 +26,30 @@ module.exports = defineConfig({
         providers: [
           {
             resolve: "./src/modules/my-razor-payemnt",
-            id: "my-razor-payemnt",
+            id: "my-razor-payment",
             options: {
               // provider options...
               apiKey: "rzp_test_v9OipkUZNTnkXj"
+            }
+          }
+        ]
+      }
+    },
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/my-phonepay-payemnt",
+            id: "my-phonepay-payemnt",
+            options: {
+              redirectUrl: "http://localhost:8000/api/payment-confirmed",
+              callbackUrl: "http://localhost:9000/phonepe/hook",
+              salt: process.env.PHONEPE_SALT,
+              merchantId:
+                  process.env.PHONEPE_MERCHANT_ACCOUNT,
+              mode: process.env.PHONEPE_MODE,
+              redirectMode: "POST"
             }
           }
         ]

@@ -27,7 +27,7 @@ export function DrawerDemo({
   setTempimage,
   tempimage,
 }: {
-    data : any,
+  data: any;
   imgispresent: boolean;
   setTempimage: any;
   tempimage: string;
@@ -35,7 +35,7 @@ export function DrawerDemo({
   //   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(tempimage);
-  const [isModalOpen , setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const uploadImage = async (file: File) => {
     if (file) {
@@ -45,7 +45,7 @@ export function DrawerDemo({
         formData.append("image", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload/100",
+          `https://storage.themajesticpeacock.com/upload/100`,
           formData,
           {
             headers: {
@@ -88,7 +88,6 @@ export function DrawerDemo({
         console.error("Error:", err);
       });
   };
-  
 
   return (
     <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -150,7 +149,7 @@ export function DrawerDemo({
           <Drawer.Close asChild>
             <Button variant="secondary">Cancel</Button>
           </Drawer.Close>
-          <Button onClick={()=>handleSubmit(data.id)}>Save</Button>
+          <Button onClick={() => handleSubmit(data.id)}>Save</Button>
         </Drawer.Footer>
       </Drawer.Content>
     </Drawer>
@@ -158,32 +157,36 @@ export function DrawerDemo({
 }
 
 const ProductcategoryWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
-//   const tempImage = tempimage ?? null;
-  const [tempImage, setTempImage] = useState<string | null>(data.metadata?.img || null);
-
+  //   const tempImage = tempimage ?? null;
+  const [tempImage, setTempImage] = useState<string | null>(
+    typeof data.metadata?.img === 'string' ? data.metadata.img : null
+  );
 
   console.log(data.metadata);
 
   return (
-  <div className="flex flex-col" >
-  
-   <Container className="divide-y flex flex-col min-h-[100px] gap-4">
-      <div className="flex justify-end ">
-        <DrawerDemo
-          setTempimage={setTempImage}
-          tempimage={tempImage ?? ""}
-          imgispresent={!!data.metadata?.img}
-          data={data}
-        />
-      </div>
+    <div className="flex flex-col">
+      <Container className="divide-y flex flex-col min-h-[100px] gap-4">
+        <div className="flex justify-end ">
+          <DrawerDemo
+            setTempimage={setTempImage}
+            tempimage={tempImage ?? ""}
+            imgispresent={!!data.metadata?.img}
+            data={data}
+          />
+        </div>
 
-      {tempImage && (
-        <Container className=" p-0 overflow-hidden">
-          <img src={tempImage} className="w-full h-full object-cover" alt="Product Category" />
-        </Container>
-      )}
-    </Container>
-  </div>
+        {tempImage && (
+          <Container className=" p-0 overflow-hidden">
+            <img
+              src={tempImage}
+              className="w-full h-full object-cover"
+              alt="Product Category"
+            />
+          </Container>
+        )}
+      </Container>
+    </div>
   );
 };
 

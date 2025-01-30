@@ -95,7 +95,7 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
         formData.append("image", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload/100",
+          `https://storage.themajesticpeacock.com/upload/100`,
           formData,
           {
             headers: {
@@ -122,7 +122,7 @@ const HighlightSectionForm: React.FC<HighlightSectionFormProps> = ({
         formData.append("image", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload-video",
+          `https://storage.themajesticpeacock.com/upload-video`,
           formData,
           {
             headers: {
@@ -394,7 +394,7 @@ const Addredirect = () => {
 
   const fetchRouteData = async () => {
     try {
-      const response = await fetch(`/admin/home/01JG6HH2SRR40N5ESFWXZ44FRY`);
+      const response = await fetch(`/admin/home/01JJ480SWPVBMMNPQC032XXJZS`);
       if (!response.ok) {
         throw new Error("Failed to fetch route data");
       }

@@ -20,7 +20,7 @@ export const PUT = async (
   }
   const { body } = req;
   console.log("route hit", id);
-  console.log(body)
+  console.log(body , " update from it")
 
   // Validate the request body
   const parsedBody = PatchAdminCreateFeatured.parse(body);

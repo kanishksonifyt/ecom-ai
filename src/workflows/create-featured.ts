@@ -113,6 +113,8 @@ export const editFeaturedStep = createStep(
       image: input.image,
       link: input.link,
       type : input.type,
+      text: input.text,
+      title: input.title,
     });
 
     return new StepResponse(updatedFeatured, updatedFeatured.id);

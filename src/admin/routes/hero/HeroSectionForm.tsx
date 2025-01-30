@@ -211,7 +211,7 @@ const HeroSectionForm = ({
       setSecondButtonRoute("");
       setImage(null);
       setResponseImageLink("");
-      setActiveTab("general")
+      setActiveTab("general");
       toast.dismiss();
       toast.success("Success", {
         description: "Hero section created successfully",
@@ -242,7 +242,7 @@ const HeroSectionForm = ({
           formData.append("image", image);
 
           const response = await axios.post(
-            "http://148.135.138.221:4000/upload/100",
+            `https://storage.themajesticpeacock.com/upload/100`,
             formData,
             {
               headers: {
@@ -445,7 +445,7 @@ const HeroSectionForm = ({
                     submitvalidation();
                     return;
                   }
-                  
+
                   if (validateCurrentTab()) handleNext();
                 }}
                 // disabled={!isCurrentTabCompleted}

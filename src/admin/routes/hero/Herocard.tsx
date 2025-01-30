@@ -226,7 +226,7 @@ const HeroSectionForm = ({
         formData.append("image", file);
 
         const response = await axios
-          .post("http://148.135.138.221:4000/upload/100", formData, {
+          .post(`https://storage.themajesticpeacock.com/upload/100`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization:

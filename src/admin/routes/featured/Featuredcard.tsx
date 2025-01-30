@@ -42,7 +42,7 @@ export function AddImageToCatalog({ setCatalogImage }: AddImageToCatalogProps) {
       formData.append("image", file);
 
       const response = await axios.post(
-        "http://148.135.138.221:4000/upload/100",
+        `https://storage.themajesticpeacock.com/upload/100`,
         formData,
         {
           headers: {
@@ -199,7 +199,7 @@ const Featuredcard = ({
         title: edittitle,
         text: edittext,
         type: useCatalog ? "catalog" : "video",
-      })
+      });
 
       // if (response.status !== 200) {
       //   const errorData = await response.json();
@@ -210,7 +210,7 @@ const Featuredcard = ({
 
       const data = (await response.status) == 200;
 
-      console.log(response)
+      console.log(response);
       setfeaturedSections((prevSections: any) =>
         prevSections.map((section: any) =>
           section.id === id
@@ -238,7 +238,7 @@ const Featuredcard = ({
       return;
     }
 
-    console.log("save hit")
+    console.log("save hit");
 
     // const payload = {
     //   image: useCatalog ? "" : editImage,
@@ -251,7 +251,7 @@ const Featuredcard = ({
     const result = await updatecatalogSection(id);
     if (result) {
       setFocusModalOpen(false);
-      console.log("sves")
+      console.log("sves");
     }
   };
 
@@ -264,7 +264,7 @@ const Featuredcard = ({
         formData.append("video", file);
 
         const response = await axios.post(
-          "http://148.135.138.221:4000/upload-video",
+          `https://storage.themajesticpeacock.com/upload-video`,
           formData,
           {
             headers: {
@@ -287,7 +287,6 @@ const Featuredcard = ({
       const response = await axios.get("/admin/catalogfeatured/");
       console.log(response);
       setCatalogImages(response.data.catalogfeatureds); // Assuming this dvsdvAPI returns a list of image URLs
-      
     } catch (error) {
       console.error("Error fetching catalog images:", error);
     }
