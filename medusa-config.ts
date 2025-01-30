@@ -36,25 +36,26 @@ module.exports = defineConfig({
       }
     },
     {
-      resolve: "@medusajs/medusa/payment",
+      resolve: "@medusajs/medusa/payment",  // This resolves the Medusa payment service
       options: {
         providers: [
           {
-            resolve: "./src/modules/my-phonepay-payemnt",
-            id: "my-phonepay-payemnt",
+            resolve: "./src/modules/my-phonepay-payemnt",  // Path to your custom PhonePe payment module
+            id: "my-phonepay-payemnt",  // Unique identifier for this provider
             options: {
-              redirectUrl: "http://localhost:8000/api/payment-confirmed",
-              callbackUrl: "http://localhost:9000/phonepe/hook",
-              salt: process.env.PHONEPE_SALT,
-              merchantId:
-                  process.env.PHONEPE_MERCHANT_ACCOUNT,
-              mode: process.env.PHONEPE_MODE,
-              redirectMode: "POST"
+              redirectUrl: "http://localhost:8000/api/payment-confirmed",  // URL to redirect after payment confirmation
+              callbackUrl: "http://localhost:9000/phonepe/hook",  // URL for the callback (hook) after payment processing
+              saltKey: process.env.PHONEPE_SALT_KEY,  // The salt key used for generating signatures (loaded from environment)
+              merchantId: process.env.PHONEPE_MERCHANT_ID,  // Merchant ID for the payment gateway (loaded from environment)
+              env: process.env.PHONEPE_MODE,  // The environment mode (either "production" or "sandbox")
+              redirectMode: "POST",  // The method to use for the redirect (could be GET or POST)
+              saltIndex : process.env.PHONEPE_SALT_INDEX
             }
           }
         ]
       }
     },
+    
     {
       resolve: "@medusajs/medusa/fulfillment",
       options: {
